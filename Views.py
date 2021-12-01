@@ -1,7 +1,5 @@
 import json
 import re
-# import Tkinter as tk
-import matplot as mp
 import pycountry_convert as pc
 
 class Views:
@@ -31,7 +29,7 @@ class Views:
         for entry in self.dataList:
             for k, v in entry.items():
                 if v == docUUID:
-                    continent = pc.country_alpha2_to_continent_code(v)
+                    continent = pc.country_alpha2_to_continent_code(entry["visitor_country"])
                     if continent not in self.continentsDict:
                         self.continentsDict.update({continent: 1})
                     else:
@@ -89,8 +87,8 @@ class Views:
 
 view = Views()
 # view.bybrowser()
-# view.bycountry("140222143932-91796b01f94327ee809bd759fd0f6c76")
-# view.bycontinent()
+print(view.bycountry("080826024732-2c61742d5b4743f88576f5c97457b12a"))
+print(view.bycontinent("080826024732-2c61742d5b4743f88576f5c97457b12a"))
 # view.userMinutes()
 print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))
 print(view.docsReadByVisitor("4065369dbee2b902"))
