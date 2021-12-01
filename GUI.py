@@ -15,7 +15,7 @@ doc_id = "140206190709-588cfdd5a76882bb490848f04fca2efb"
 #Start of window
 window = tk.Tk()
 
-window.geometry("800x800")
+window.geometry("1200x800")
 
 #Document ID Input Label
 input_doc_id_label = tk.Label(window, text="Input doc_id", font="Arial", height=2, width=10)
@@ -79,7 +79,7 @@ def plot(browser_dict):
         widget.destroy()
 
     # the figure that will contain the plot
-    fig = Figure(figsize = (5, 5),
+    fig = Figure(figsize = (10, 5),
                 dpi = 100)
 
     print(browser_dict.items())
