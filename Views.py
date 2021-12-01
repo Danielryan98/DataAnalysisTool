@@ -11,13 +11,17 @@ class Views:
 
         self.browserDict = {}
         self.browserNamesDict = {}
+        self.countries = {}
 
     def bycountry(self, uuid):
         for entry in self.dataList:
             for k, v in entry.items():
                 if v == uuid:
-                    print(v)
-
+                    if entry["visitor_country"] not in self.countries:
+                        self.countries.update({entry["visitor_country"]: 1})
+                    else:
+                        self.countries[entry["visitor_country"]] = self.countries[entry["visitor_country"]] + 1
+        print(self.countries)
 
     def bycontinent(self):
         print("Views by ... class")
