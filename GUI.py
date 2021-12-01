@@ -10,6 +10,7 @@ NavigationToolbar2Tk)
 
 from Views import Views
 
+doc_id = "140222143932-91796b01f94327ee809bd759fd0f6c76"
 
 #Start of window
 window = tk.Tk()
@@ -18,14 +19,14 @@ window.geometry("800x800")
 
 #By country button
 by_country_text = tk.StringVar()
-by_country_btn = tk.Button(window, textvariable=by_country_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command="instance.bycountry()")
+by_country_btn = tk.Button(window, textvariable=by_country_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda: by_country_plot(doc_id))
 by_country_text.set("By Country")
 by_country_btn.place(x=0, y=0)
 
 
 #By continent button
 by_continent_text = tk.StringVar()
-by_continent_btn = tk.Button(window, textvariable=by_continent_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command="instance.bycontinent()")
+by_continent_btn = tk.Button(window, textvariable=by_continent_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda: by_continent_plot())
 by_continent_text.set("By Continent")
 by_continent_btn.place(x=0, y=50)
 
@@ -41,6 +42,16 @@ toolbarFrame.place(x=150, y=0)
 
 graphFrame = tk.Frame(window)
 graphFrame.place(x=150, y=50)
+
+def by_country_plot(doc_id):
+    instance = Views()
+    browser_dict = instance.bycountry(doc_id)
+    plot(browser_dict)
+
+def by_continent_plot():
+    instance = Views()
+    browser_dict = instance.bycontinent()
+    plot(browser_dict)
 
 def by_browser_plot():
     instance = Views()
@@ -65,6 +76,7 @@ def plot(browser_dict):
 
     x_items = []
     y_items = []
+
     for k, v in browser_dict.items():
         x_items.append(k)
         y_items.append(v)

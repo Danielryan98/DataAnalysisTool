@@ -25,7 +25,7 @@ class Views:
                         self.countriesDict.update({entry["visitor_country"]: 1})
                     else:
                         self.countriesDict[entry["visitor_country"]] = self.countriesDict[entry["visitor_country"]] + 1
-        print(self.countriesDict)
+        return self.countriesDict
 
     def bycontinent(self):
         for k, v in self.countriesDict.items():
@@ -35,6 +35,7 @@ class Views:
             else:
                 self.continentsDict[continent] = self.continentsDict[continent] + 1
         print(self.continentsDict)
+        return self.continentsDict
 
     def bybrowser(self):
         for entry in self.dataList:
@@ -64,7 +65,7 @@ class Views:
                     self.usersDict[entry["visitor_uuid"]] += entry["event_readtime"]
         # then sort the dict by time value in descending order
         self.usersDict = (dict(sorted(self.usersDict.items(), key=lambda item: item[1], reverse=True)))
-        print(self.usersDict)
+        return self.usersDict
 
     def readersOfDoc(self, docUUID):
         userUUIDs = []
