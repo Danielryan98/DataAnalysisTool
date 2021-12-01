@@ -27,14 +27,15 @@ class Views:
                         self.countriesDict[entry["visitor_country"]] = self.countriesDict[entry["visitor_country"]] + 1
         return self.countriesDict
 
-    def bycontinent(self):
-        for k, v in self.countriesDict.items():
-            continent = pc.country_alpha2_to_continent_code(k)
-            if continent not in self.continentsDict:
-                self.continentsDict.update({continent: 1})
-            else:
-                self.continentsDict[continent] = self.continentsDict[continent] + 1
-        print(self.continentsDict)
+    def bycontinent(self, docUUID):
+        for entry in self.dataList:
+            for k, v in entry.items():
+                if v == docUUID:
+                    continent = pc.country_alpha2_to_continent_code(v)
+                    if continent not in self.continentsDict:
+                        self.continentsDict.update({continent: 1})
+                    else:
+                        self.continentsDict[continent] = self.continentsDict[continent] + 1
         return self.continentsDict
 
     def bybrowser(self):
