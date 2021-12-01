@@ -36,7 +36,7 @@ by_country_btn.place(x=0, y=100)
 
 #By continent button
 by_continent_text = tk.StringVar()
-by_continent_btn = tk.Button(window, textvariable=by_continent_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda: by_continent_plot())
+by_continent_btn = tk.Button(window, textvariable=by_continent_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda: by_continent_plot(doc_id))
 by_continent_text.set("By Continent")
 by_continent_btn.place(x=0, y=150)
 
@@ -58,9 +58,9 @@ def by_country_plot(doc_id):
     browser_dict = instance.bycountry(doc_id)
     plot(browser_dict)
 
-def by_continent_plot():
+def by_continent_plot(doc_id):
     instance = Views()
-    browser_dict = instance.bycontinent()
+    browser_dict = instance.bycontinent(doc_id)
     plot(browser_dict)
 
 def by_browser_plot():
