@@ -7,7 +7,7 @@ import pycountry_convert as pc
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('test_data2.json', 'r'):
+        for line in open('sample_400k_lines.json', 'r'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
@@ -17,10 +17,10 @@ class Views:
         self.usersDict = {}
 
     # uses the subject_doc_id to uniquely specify a document
-    def bycountry(self, uuid):
+    def bycountry(self, docUUID):
         for entry in self.dataList:
             for k, v in entry.items():
-                if v == uuid:
+                if v == docUUID:
                     if entry["visitor_country"] not in self.countriesDict:
                         self.countriesDict.update({entry["visitor_country"]: 1})
                     else:
@@ -65,10 +65,21 @@ class Views:
         # then sort the dict by time value in descending order
         self.usersDict = (dict(sorted(self.usersDict.items(), key=lambda item: item[1], reverse=True)))
         print(self.usersDict)
+
+    def readersOfDoc(self, docUUID):
+        userUUIDs = []
+        for entry in self.dataList:
+            if entry["event_type"] == "read":
+                if entry["subject_doc_id"] == docUUID:
+                    userUUIDs.append(entry["visitor_uuid"])
+        return userUUIDs
+
+
     
 
 view = Views()
-view.bybrowser()
-view.bycountry("140222143932-91796b01f94327ee809bd759fd0f6c76")
-view.bycontinent()
-view.userMinutes()
+# view.bybrowser()
+# view.bycountry("140222143932-91796b01f94327ee809bd759fd0f6c76")
+# view.bycontinent()
+# view.userMinutes()
+print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))

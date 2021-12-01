@@ -2,3 +2,5 @@
 /test_data.json
 /test_data2.json
 /env
+/__pycache__
+/sample_400k_lines.json
