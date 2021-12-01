@@ -4,17 +4,18 @@ import re
 import matplot as mp
 
 class Views:
-    def __init__(self, uuid):
-        self.uuid = uuid
-
+    def __init__(self):
         self.dataList = []
         for line in open('test_data2.json', 'r'):
             self.dataList.append(json.loads(line))
 
-    def bycountry(self):
+        self.browserDict = {}
+        self.browserNamesDict = {}
+
+    def bycountry(self, uuid):
         for entry in self.dataList:
             for k, v in entry.items():
-                if v == self.uuid:
+                if v == uuid:
                     print(v)
 
 
@@ -22,35 +23,21 @@ class Views:
         print("Views by ... class")
 
     def bybrowser(self):
-        # browserSet = set([])
-        # for entry in self.dataList:
-        #     browserSet.add(entry["visitor_useragent"])
-        # print(browserSet)
-        browserDict = {}
         for entry in self.dataList:
-            if entry["visitor_useragent"] not in browserDict:
-                browserDict.update({entry["visitor_useragent"]: 1})
+            if entry["visitor_useragent"] not in self.browserDict:
+                self.browserDict.update({entry["visitor_useragent"]: 1})
             else:
-                browserDict[entry["visitor_useragent"]] = browserDict[entry["visitor_useragent"]] + 1
+                self.browserDict[entry["visitor_useragent"]] = self.browserDict[entry["visitor_useragent"]] + 1
 
-        browserNamesDict = {}
         for entry in self.dataList:
             s = re.match("(.*?)/",entry["visitor_useragent"]).group()
-            if s not in browserNamesDict:
-                browserNamesDict.update({s: 1})
+            if s not in self.browserNamesDict:
+                self.browserNamesDict.update({s: 1})
             else:
-                browserNamesDict[s] = browserNamesDict[s] + 1
-            # if re.match("(.*?)/",entry["visitor_useragent"]).group() not in browserNamesDict:
-            #     browserNamesDict.update({re.match("(.*?)/",entry["visitor_useragent"]).group()})
-            # else:
-            #     browserNamesDict[re.match("(.*?)/",entry["visitor_useragent"]).group()] = browserNamesDict[re.match("(.*?)/",entry["visitor_useragent"]).group()] + 1
-            # if entry[s] not in browserNamesDict:
-            #     browserNamesDict.update({s: 1})
-            # else:
-            #     browserNamesDict[entry[s]] = browserNamesDict[entry[s]]
+                self.browserNamesDict[s] = self.browserNamesDict[s] + 1
         
-        print(browserNamesDict)
+        print(self.browserNamesDict)
 
-view = Views("130505212721-f307a8c599d3460885c910bdb9c36920")
+view = Views()
 view.bybrowser()
-view.bycountry()
+view.bycountry("140222143932-91796b01f94327ee809bd759fd0f6c76")
