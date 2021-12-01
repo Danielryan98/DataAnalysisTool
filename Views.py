@@ -7,7 +7,7 @@ import pycountry_convert as pc
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('test_data1.json', 'r'):
+        for line in open('sample_400k_lines.json', 'r'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
