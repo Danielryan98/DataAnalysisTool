@@ -39,9 +39,7 @@ class Views:
                 self.browserNamesDict.update({s: 1})
             else:
                 self.browserNamesDict[s] = self.browserNamesDict[s] + 1
-        
-        print(self.browserNamesDict)
+        return self.browserNamesDict
 
 view = Views()
 view.bybrowser()
-view.bycountry("140222143932-91796b01f94327ee809bd759fd0f6c76")
