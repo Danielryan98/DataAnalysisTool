@@ -7,7 +7,7 @@ import pycountry_convert as pc
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('sample_400k_lines.json', 'r'):
+        for line in open('test_data1.json', 'r'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
@@ -50,7 +50,7 @@ class Views:
                 self.browserNamesDict.update({s: 1})
             else:
                 self.browserNamesDict[s] = self.browserNamesDict[s] + 1
-        print(self.browserNamesDict)
+        return self.browserNamesDict
 
     def userMinutes(self):
         for entry in self.dataList:
