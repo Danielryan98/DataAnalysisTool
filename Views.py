@@ -2,11 +2,12 @@ import json
 import re
 import pycountry_convert as pc
 import httpagentparser as hp
+from multipledispatch import dispatch
 
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('sample_400k_lines.json', 'r'):
+        for line in open('sample_100k_lines.json', 'r'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
@@ -95,13 +96,64 @@ class Views:
                     docUUIDs.append(entry["subject_doc_id"])
         return docUUIDs
 
+    def sortFunc(self, x, dict):
+        n = 0
+        for k in dict.keys():
+            if x in dict[k]:
+                n += 1
+        return n
+
+    @dispatch(object, object)
+    def alsoLikes(self, docUUID, sortFunc):
+        alsoLikesDict = {}
+        userUUIDS = self.readersOfDoc(docUUID)
+        for user in userUUIDS:
+            alsoLikesDict.update({user: self.docsReadByVisitor(user)})
+        
+        xs = set([])
+        for k in alsoLikesDict.keys():
+            xs = xs | set(alsoLikesDict[k])
+        xs_sort = [(sortFunc(x,alsoLikesDict), x) for x in xs]
+
+        xs_sort.sort()
+
+        return xs_sort
+
+    @dispatch(object, object, object)
+    def alsoLikes(self, docUUID, userUUID, sortFunc):
+        alsoLikesDict = {}
+        userUUIDS = self.readersOfDoc(docUUID)
+        for user in userUUIDS:
+            if user == userUUID:
+                alsoLikesDict.update({userUUID: docUUID})
+            else:
+                alsoLikesDict.update({user: self.docsReadByVisitor(user)})
+        
+        xs = set([])
+        for k in alsoLikesDict.keys():
+            xs = xs | set(alsoLikesDict[k])
+        xs_sort = [(sortFunc(x,alsoLikesDict), x) for x in xs]
+
+        xs_sort.sort()
+
+        return xs_sort
+
+
+
+
 
     
 
 view = Views()
 # view.bybrowser()
-print(view.bycountry("080826024732-2c61742d5b4743f88576f5c97457b12a"))
-print(view.bycontinent("080826024732-2c61742d5b4743f88576f5c97457b12a"))
+# print(view.bycountry("080826024732-2c61742d5b4743f88576f5c97457b12a"))
+# print(view.bycontinent("080826024732-2c61742d5b4743f88576f5c97457b12a"))
 # view.userMinutes()
-print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))
-print(view.docsReadByVisitor("4065369dbee2b902"))
+# print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))
+# print(view.docsReadByVisitor("4065369dbee2b902"))
+# print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", view.sortFunc))
+# print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", "53a376a3e4caa372", view.sortFunc))
+
+print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc))
+print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", "00000000deadbeef", view.sortFunc))
+
