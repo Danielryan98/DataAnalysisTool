@@ -1,17 +1,8 @@
-import json
 import tkinter as tk
-import matplot as mp
-from matplotlib import use
 import matplotlib.pyplot as plt
 import graphviz as gv
-from numpy.core.fromnumeric import shape
-import pydot
-import PIL
-from PIL import ImageTk
-from PIL import Image as PI
 from subprocess import check_call
 import matplotlib.image as mpimg
-from tkinter import * 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
 NavigationToolbar2Tk)
@@ -23,7 +14,7 @@ doc_id = "100713205147-2ee05a98f1794324952eea5ca678c026"
 doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b" #view.sortFunc
 
 visUUID = ""
-docUUID = "100806162735-00000000115598650cb8b514246272b5"
+docUUID = "140310171202-000000002e5a8ff1f577548fec708d50"
 
 #Start of window
 window = tk.Tk()
@@ -158,9 +149,20 @@ def clear_widgets():
     for widget in graphFrame.winfo_children():
         widget.destroy()
 
+#Function taken from https://stackoverflow.com/a/45846841 user 'rtaft'
+def format_number(num):
+    num = float('{:.3g}'.format(num))
+    magnitude = 0
+    while abs(num) >= 1000:
+        magnitude += 1
+        num /= 1000.0
+    return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
 
 def make_graph(xs_sort):
+
+    instance = Views()
+    data_size = format_number(instance.dataList.__len__())
 
     clear_widgets()
 
@@ -175,6 +177,10 @@ def make_graph(xs_sort):
     has_read_shape = 'circle'
 
     dot = gv.Digraph('also likes')
+
+    dot.node('Readers', 'Readers', shape='none')
+    dot.node('Documents', 'Documents', shape='none')
+    dot.edge('Readers', 'Documents', label='Size: ' + data_size)
 
     for x in xs_sort:
         if x[1] == main_doc_id:
@@ -205,6 +211,7 @@ def make_graph(xs_sort):
     plot1 = fig.add_subplot(111)
 
     # plotting the graph
+    plot1.axis('off')
     plot1.imshow(img_arr)
     
 

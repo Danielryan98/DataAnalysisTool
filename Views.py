@@ -7,7 +7,7 @@ from multipledispatch import dispatch
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('sample_100k_lines.json', 'r'):
+        for line in open('sample_400k_lines.json', 'r', encoding='utf-8'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
@@ -92,9 +92,8 @@ class Views:
         # so make a set to get rid of duplicates
         docUUIDs = []
         for entry in self.dataList:
-            if entry["event_type"] == "read" and entry["visitor_uuid"] == visUUID:
-                if entry["subject_doc_id"] not in docUUIDs:
-                    docUUIDs.append(entry["subject_doc_id"])
+            if entry["event_type"] == "read" and entry["visitor_uuid"] == visUUID and entry["subject_doc_id"] not in docUUIDs:
+                docUUIDs.append(entry["subject_doc_id"])
         return docUUIDs
 
     def sortFunc(self, x, dict):
