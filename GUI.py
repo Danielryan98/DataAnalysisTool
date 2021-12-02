@@ -50,6 +50,15 @@ by_browser_btn = tk.Button(window, textvariable=by_browser_text, font="Arial", b
 by_browser_text.set("By Browser")
 by_browser_btn.place(x=0, y=200)
 
+#Also likes button
+also_likes_text = tk.StringVar()
+also_likes_btn = tk.Button(window, textvariable=also_likes_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
+also_likes_text.set("Also Likes")
+also_likes_btn.place(x=0, y=250)
+
+toolbarFrame = tk.Frame(window)
+toolbarFrame.place(x=150, y=0)
+
 #Also likes graph button
 also_likes_graph_text = tk.StringVar()
 also_likes_graph_btn = tk.Button(window, textvariable=also_likes_graph_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
