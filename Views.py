@@ -38,6 +38,7 @@ class Views:
                         self.continentsDict[continent] = self.continentsDict[continent] + 1
         return self.continentsDict
 
+    #Needs refactored
     def bybrowser(self):
         for entry in self.dataList:
             if entry["visitor_useragent"] not in self.browserDict:

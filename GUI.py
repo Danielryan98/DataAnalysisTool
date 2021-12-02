@@ -2,6 +2,8 @@ import json
 import tkinter as tk
 import matplot as mp
 import matplotlib.pyplot as plt
+import graphviz as gv
+import doctest
 
 from tkinter import * 
 from matplotlib.figure import Figure
@@ -30,23 +32,29 @@ input_doc_id.place(x=0, y=50)
 
 #By country button
 by_country_text = tk.StringVar()
-by_country_btn = tk.Button(window, textvariable=by_country_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda: by_country_plot(doc_id))
+by_country_btn = tk.Button(window, textvariable=by_country_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda: by_country_plot(doc_id))
 by_country_text.set("By Country")
 by_country_btn.place(x=0, y=100)
 
 
 #By continent button
 by_continent_text = tk.StringVar()
-by_continent_btn = tk.Button(window, textvariable=by_continent_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda: by_continent_plot(doc_id))
+by_continent_btn = tk.Button(window, textvariable=by_continent_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda: by_continent_plot(doc_id))
 by_continent_text.set("By Continent")
 by_continent_btn.place(x=0, y=150)
 
 
 #By browser button
 by_browser_text = tk.StringVar()
-by_browser_btn = tk.Button(window, textvariable=by_browser_text, font="Arial", bg="Blue", fg="White", height=2, width=10, command=lambda : by_browser_plot())
+by_browser_btn = tk.Button(window, textvariable=by_browser_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : by_browser_plot())
 by_browser_text.set("By Browser")
 by_browser_btn.place(x=0, y=200)
+
+#Also likes graph button
+also_likes_graph_text = tk.StringVar()
+also_likes_graph_btn = tk.Button(window, textvariable=also_likes_graph_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
+also_likes_graph_text.set("Also Likes Graph")
+also_likes_graph_btn.place(x=0, y=300)
 
 toolbarFrame = tk.Frame(window)
 toolbarFrame.place(x=150, y=0)
@@ -71,13 +79,7 @@ def by_browser_plot():
 
 def plot(browser_dict):
 
-    #Reset toolbar frame to allow for new graph toolbar
-    for widget in toolbarFrame.winfo_children():
-        widget.destroy()
-
-    #Reset chart frame to allow for new graph
-    for widget in graphFrame.winfo_children():
-        widget.destroy()
+    clear_widgets()
 
     # the figure that will contain the plot
     fig = Figure(figsize = (10, 5),
@@ -120,6 +122,27 @@ def plot(browser_dict):
     # placing the toolbar on the Tkinter window
     toolbar.pack()
 
+def clear_widgets():
+    #Reset toolbar frame to allow for new graph toolbar
+    for widget in toolbarFrame.winfo_children():
+        widget.destroy()
+
+    #Reset chart frame to allow for new graph
+    for widget in graphFrame.winfo_children():
+        widget.destroy()
+
+def make_graph():
+
+    dot = gv.Digraph('round-table', comment='The Round Table')
+
+    dot.node('A', 'King Arthur')  
+    dot.node('B', 'Sir Bedevere the Wise')
+    dot.node('L', 'Sir Lancelot the Brave')
+
+    dot.edges(['AB', 'AL'])
+    dot.edge('B', 'L', constraint='false')
+
+    print(dot.source)
 
 window.mainloop()
 #End of window
