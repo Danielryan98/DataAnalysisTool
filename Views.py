@@ -1,6 +1,7 @@
 import json
 import re
 import pycountry_convert as pc
+import httpagentparser as hp
 
 class Views:
     def __init__(self):
@@ -13,6 +14,7 @@ class Views:
         self.countriesDict = {}
         self.continentsDict = {}
         self.usersDict = {}
+        self.delete_list = []
 
     # uses the subject_doc_id to uniquely specify a document
     def bycountry(self, docUUID):
@@ -44,12 +46,22 @@ class Views:
                 self.browserDict[entry["visitor_useragent"]] = self.browserDict[entry["visitor_useragent"]] + 1
         print(self.browserDict.values())
 
-        for entry in self.dataList:
-            s = re.match("(.*?)/",entry["visitor_useragent"]).group()
-            if s not in self.browserNamesDict:
-                self.browserNamesDict.update({s: 1})
-            else:
-                self.browserNamesDict[s] = self.browserNamesDict[s] + 1
+        for entry in self.browserDict:
+            entry_data = hp.detect(entry)
+            if 'browser' in entry_data:
+                x = entry_data.get("browser")
+                x = x.get('name')
+                if x not in self.browserNamesDict:
+                    self.browserNamesDict.update({x: 1})
+                else:
+                    self.browserNamesDict[x] = self.browserNamesDict[x] + 1
+        self.browserNamesDict["Other"] = 0
+        for browser, count in self.browserNamesDict.items():
+            if count < 50:
+                self.browserNamesDict["Other"] += count
+                self.delete_list.append(browser)
+        for browser in self.delete_list:
+            del self.browserNamesDict[browser]
         return self.browserNamesDict
 
     def userMinutes(self):

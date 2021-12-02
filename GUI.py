@@ -10,7 +10,8 @@ NavigationToolbar2Tk)
 
 from Views import Views
 
-doc_id = "140206190709-588cfdd5a76882bb490848f04fca2efb"
+#### REMBER TO CHANGE THE DOC ID #####
+doc_id = "140310170010-0000000067dc80801f1df696ae52862b"
 
 #Start of window
 window = tk.Tk()
