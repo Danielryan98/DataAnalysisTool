@@ -3,8 +3,12 @@ import tkinter as tk
 import matplot as mp
 import matplotlib.pyplot as plt
 import graphviz as gv
-import doctest
-
+import pydot
+import PIL
+from PIL import ImageTk
+from PIL import Image as PI
+from subprocess import check_call
+import matplotlib.image as mpimg
 from tkinter import * 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
@@ -13,7 +17,7 @@ NavigationToolbar2Tk)
 from Views import Views
 
 #### REMBER TO CHANGE THE DOC ID #####
-doc_id = "140310170010-0000000067dc80801f1df696ae52862b"
+doc_id = "100713205147-2ee05a98f1794324952eea5ca678c026"
 
 #Start of window
 window = tk.Tk()
@@ -65,11 +69,19 @@ also_likes_graph_btn = tk.Button(window, textvariable=also_likes_graph_text, fon
 also_likes_graph_text.set("Also Likes Graph")
 also_likes_graph_btn.place(x=0, y=300)
 
+#Walkthrough button
+tutorial_text = tk.StringVar()
+tutorial_btn = tk.Button(window, textvariable=tutorial_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
+tutorial_text.set("Tutorial")
+tutorial_btn.place(x=0, y=350)
+
 toolbarFrame = tk.Frame(window)
 toolbarFrame.place(x=150, y=0)
 
 graphFrame = tk.Frame(window)
 graphFrame.place(x=150, y=50)
+
+
 
 def by_country_plot(doc_id):
     instance = Views()
@@ -90,9 +102,9 @@ def plot(browser_dict):
 
     clear_widgets()
 
-    # the figure that will contain the plot
+   # the figure that will contain the plot
     fig = Figure(figsize = (10, 5),
-                dpi = 100)
+            dpi = 100)
 
     print(browser_dict.items())
 
@@ -140,9 +152,17 @@ def clear_widgets():
     for widget in graphFrame.winfo_children():
         widget.destroy()
 
+
+
 def make_graph():
 
-    dot = gv.Digraph('round-table', comment='The Round Table')
+    clear_widgets()
+
+    # the figure that will contain the plot
+    fig = Figure(figsize = (10, 5),
+            dpi = 100)
+
+    dot = gv.Digraph('also likes')
 
     dot.node('A', 'King Arthur')  
     dot.node('B', 'Sir Bedevere the Wise')
@@ -152,6 +172,32 @@ def make_graph():
     dot.edge('B', 'L', constraint='false')
 
     print(dot.source)
+
+    with open('graph.dot', "w") as dotfile:
+        dotfile.truncate(0)
+        dotfile.write(dot.source)
+        dotfile.close()
+
+   
+    check_call(['dot','-Tpng','graph.dot','-o','graph.png'])
+
+    img_arr = mpimg.imread('graph.png')
+
+    # adding the subplot
+    plot1 = fig.add_subplot(111)
+
+
+    # plotting the graph
+    plot1.imshow(img_arr)
+    
+
+    canvas = FigureCanvasTkAgg(fig, master = graphFrame)  
+    canvas.draw()
+
+    # placing the canvas on the Tkinter window
+    canvas.get_tk_widget().pack()
+
+
 
 window.mainloop()
 #End of window
