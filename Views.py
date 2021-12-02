@@ -7,7 +7,7 @@ from multipledispatch import dispatch
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('sample_100k_lines.json', 'r'):
+        for line in open('sample_400k_lines.json', 'r'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
@@ -83,16 +83,17 @@ class Views:
     def readersOfDoc(self, docUUID):
         userUUIDs = []
         for entry in self.dataList:
-            if entry["event_type"] == "read":
-                if entry["subject_doc_id"] == docUUID:
-                    userUUIDs.append(entry["visitor_uuid"])
+            if entry["event_type"] == "read" and entry["subject_doc_id"] == docUUID:
+                userUUIDs.append(entry["visitor_uuid"])
         return userUUIDs
 
     def docsReadByVisitor(self, visUUID):
+        # a user can read the same document multiple times (as is the case for the doc_uuid and user_uuid used for the 2nd 100k lines test)
+        # so make a set to get rid of duplicates
         docUUIDs = []
         for entry in self.dataList:
-            if entry["event_type"] == "read":
-                 if entry["visitor_uuid"] == visUUID:
+            if entry["event_type"] == "read" and entry["visitor_uuid"] == visUUID:
+                if entry["subject_doc_id"] not in docUUIDs:
                     docUUIDs.append(entry["subject_doc_id"])
         return docUUIDs
 
@@ -115,9 +116,22 @@ class Views:
         for k in alsoLikesDict.keys():
             # gets the list of document UUIDs associated with a key k and adds them to the set xs
             xs = xs | set(alsoLikesDict[k])
-        xs_sort = [(sortFunc(x,alsoLikesDict), x) for x in xs]
+        xs_sort = [[sortFunc(x,alsoLikesDict), x] for x in xs]
 
+        # appends a list of visitors who have read the document
+        for k in xs_sort:
+            userUUIDs = []
+            for x in alsoLikesDict:
+                for docUUID in alsoLikesDict[x]:
+                    if docUUID == k[1]:
+                        userUUIDs.append(x[-4:])
+            k[1] = k[1][-4:]
+            k.append(userUUIDs)
+
+        # sort() method sorts on first element of nested list 
         xs_sort.sort()
+        # reverse the list to get most read document first
+        xs_sort.reverse()
 
         return xs_sort
 
@@ -136,22 +150,30 @@ class Views:
         for k in alsoLikesDict.keys():
             # gets the list of document UUIDs associated with a key k and adds them to the set xs
             xs = xs | set(alsoLikesDict[k])
-        xs_sort = [(sortFunc(x,alsoLikesDict), x) for x in xs]
+        xs_sort = [[sortFunc(x,alsoLikesDict), x] for x in xs]
 
+        # appends a list of visitors who have read the document
+        for k in xs_sort:
+            userUUIDs = []
+            for x in alsoLikesDict:
+                for docUUID in alsoLikesDict[x]:
+                    if docUUID == k[1]:
+                        userUUIDs.append(x[-4:])
+            k.append(userUUIDs)
+            # get the last 4 hex-digits of the document UUID
+            k[1] = k[1][-4:]
+
+        # sort on a tuple sorts on the first element
         xs_sort.sort()
+        xs_sort.reverse()
 
         return xs_sort
 
     def writeDocSource(self):
-        alsoLikesTuples = self.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc)
-        print("digraph also_likes {")
-        print('ranksep=.75; ratio=compress; size = "15,22"; orientation=landscape; rotate=180;')
-        print("{")
-        print("node [shape=plaintext, fontsize=16];")
-        print("")
-        print("Readers -> Documents")
-        print('[label="Size: 1m"];')
-        for tup in alsoLikesTuples:
+        alsoLikesList = self.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc)
+
+        # make labels
+        for lst in alsoLikesList:
             print()
 
 
@@ -162,15 +184,17 @@ class Views:
 
 view = Views()
 # view.bybrowser()
-print(view.bycountry("100713205147-2ee05a98f1794324952eea5ca678c026"))
-print(view.bycontinent("100713205147-2ee05a98f1794324952eea5ca678c026"))
+# print(view.bycountry("100713205147-2ee05a98f1794324952eea5ca678c026"))
+# print(view.bycontinent("100713205147-2ee05a98f1794324952eea5ca678c026"))
 # view.userMinutes()
 # print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))
-# print(view.docsReadByVisitor("4065369dbee2b902"))
-# print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", view.sortFunc))
-# print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", "53a376a3e4caa372", view.sortFunc))
 
-# print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc))
-print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", "00000000deadbeef", view.sortFunc))
-# view.writeDocSource()
+# 100k tests
+# print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", "00000000deadbeef", view.sortFunc))
+# print(view.alsoLikes("aaaaaaaaaaaa-00000000df1ad06a86c40000000feadbe", " 00000000deadbeef", view.sortFunc))
+
+# 400k tests
+# print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", view.sortFunc))
+# print(view.alsoLikes("140310171202-000000002e5a8ff1f577548fec708d50", view.sortFunc))
+
 
