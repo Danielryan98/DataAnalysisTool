@@ -1,8 +1,10 @@
 import json
 import tkinter as tk
 import matplot as mp
+from matplotlib import use
 import matplotlib.pyplot as plt
 import graphviz as gv
+from numpy.core.fromnumeric import shape
 import pydot
 import PIL
 from PIL import ImageTk
@@ -18,6 +20,10 @@ from Views import Views
 
 #### REMBER TO CHANGE THE DOC ID #####
 doc_id = "100713205147-2ee05a98f1794324952eea5ca678c026"
+doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b" #view.sortFunc
+
+visUUID = ""
+docUUID = "100806162735-00000000115598650cb8b514246272b5"
 
 #Start of window
 window = tk.Tk()
@@ -56,7 +62,7 @@ by_browser_btn.place(x=0, y=200)
 
 #Also likes button
 also_likes_text = tk.StringVar()
-also_likes_btn = tk.Button(window, textvariable=also_likes_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
+also_likes_btn = tk.Button(window, textvariable=also_likes_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : determine_func())
 also_likes_text.set("Also Likes")
 also_likes_btn.place(x=0, y=250)
 
@@ -65,13 +71,13 @@ toolbarFrame.place(x=150, y=0)
 
 #Also likes graph button
 also_likes_graph_text = tk.StringVar()
-also_likes_graph_btn = tk.Button(window, textvariable=also_likes_graph_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
+also_likes_graph_btn = tk.Button(window, textvariable=also_likes_graph_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : determine_func())
 also_likes_graph_text.set("Also Likes Graph")
 also_likes_graph_btn.place(x=0, y=300)
 
 #Walkthrough button
 tutorial_text = tk.StringVar()
-tutorial_btn = tk.Button(window, textvariable=tutorial_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : make_graph())
+tutorial_btn = tk.Button(window, textvariable=tutorial_text, font="Arial", bg="Blue", fg="White", height=2, width=15, command=lambda : determine_func())
 tutorial_text.set("Tutorial")
 tutorial_btn.place(x=0, y=350)
 
@@ -154,23 +160,35 @@ def clear_widgets():
 
 
 
-def make_graph():
+def make_graph(xs_sort):
 
     clear_widgets()
+
+    main_user_id = visUUID[-4:]
+    main_doc_id = docUUID[-4:]
 
     # the figure that will contain the plot
     fig = Figure(figsize = (10, 5),
             dpi = 100)
 
+    user_shape = 'box'
+    has_read_shape = 'circle'
+
     dot = gv.Digraph('also likes')
 
-    dot.node('A', 'King Arthur')  
-    dot.node('B', 'Sir Bedevere the Wise')
-    dot.node('L', 'Sir Lancelot the Brave')
-
-    dot.edges(['AB', 'AL'])
-    dot.edge('B', 'L', constraint='false')
-
+    for x in xs_sort:
+        if x[1] == main_doc_id:
+            dot.node(x[1], x[1], shape=has_read_shape, color='green', style='filled')
+        else:
+            dot.node(x[1], x[1], shape=has_read_shape)
+        for y in x[2]:
+            if y == main_user_id:
+                dot.node(y, y, shape=user_shape, color='green', style='filled')
+                dot.edge(y, x[1])
+            else:
+                dot.node(y, y, shape=user_shape)
+                dot.edge(y, x[1])
+      
     print(dot.source)
 
     with open('graph.dot', "w") as dotfile:
@@ -186,7 +204,6 @@ def make_graph():
     # adding the subplot
     plot1 = fig.add_subplot(111)
 
-
     # plotting the graph
     plot1.imshow(img_arr)
     
@@ -196,6 +213,19 @@ def make_graph():
 
     # placing the canvas on the Tkinter window
     canvas.get_tk_widget().pack()
+
+def determine_func():
+
+    
+
+    instance = Views()
+
+    if docUUID and visUUID:      
+        xs_sort = instance.alsoLikes(docUUID, visUUID, instance.sortFunc)
+        make_graph(xs_sort)
+    else:
+        xs_sort = instance.alsoLikes(docUUID, instance.sortFunc)
+        make_graph(xs_sort)
 
 
 

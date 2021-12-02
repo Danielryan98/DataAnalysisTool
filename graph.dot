@@ -1,8 +1,19 @@
 digraph "also likes" {
-	A [label="King Arthur"]
-	B [label="Sir Bedevere the Wise"]
-	L [label="Sir Lancelot the Brave"]
-	A -> B
-	A -> L
-	B -> L [constraint=false]
+	"72b5" [label="72b5" color=green shape=circle style=filled]
+	"1a0c" [label="1a0c" shape=box]
+	"1a0c" -> "72b5"
+	beef [label=beef shape=box]
+	beef -> "72b5"
+	dd59 [label=dd59 shape=circle]
+	"1a0c" [label="1a0c" shape=box]
+	"1a0c" -> dd59
+	b92f [label=b92f shape=circle]
+	"1a0c" [label="1a0c" shape=box]
+	"1a0c" -> b92f
+	adbe [label=adbe shape=circle]
+	beef [label=beef shape=box]
+	beef -> adbe
+	"14cf" [label="14cf" shape=circle]
+	"1a0c" [label="1a0c" shape=box]
+	"1a0c" -> "14cf"
 }
