@@ -110,8 +110,10 @@ class Views:
         for user in userUUIDS:
             alsoLikesDict.update({user: self.docsReadByVisitor(user)})
         
+        # xs is the set of all read document UUIDs, and because its a set it gets rid of duplicates
         xs = set([])
         for k in alsoLikesDict.keys():
+            # gets the list of document UUIDs associated with a key k and adds them to the set xs
             xs = xs | set(alsoLikesDict[k])
         xs_sort = [(sortFunc(x,alsoLikesDict), x) for x in xs]
 
@@ -125,18 +127,32 @@ class Views:
         userUUIDS = self.readersOfDoc(docUUID)
         for user in userUUIDS:
             if user == userUUID:
-                alsoLikesDict.update({userUUID: docUUID})
+                alsoLikesDict.update({userUUID: [docUUID]})
             else:
                 alsoLikesDict.update({user: self.docsReadByVisitor(user)})
         
+        # xs is the set of all read document UUIDs, and because its a set it gets rid of duplicates
         xs = set([])
         for k in alsoLikesDict.keys():
+            # gets the list of document UUIDs associated with a key k and adds them to the set xs
             xs = xs | set(alsoLikesDict[k])
         xs_sort = [(sortFunc(x,alsoLikesDict), x) for x in xs]
 
         xs_sort.sort()
 
         return xs_sort
+
+    def writeDocSource(self):
+        alsoLikesTuples = self.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc)
+        print("digraph also_likes {")
+        print('ranksep=.75; ratio=compress; size = "15,22"; orientation=landscape; rotate=180;')
+        print("{")
+        print("node [shape=plaintext, fontsize=16];")
+        print("")
+        print("Readers -> Documents")
+        print('[label="Size: 1m"];')
+        for tup in alsoLikesTuples:
+            print()
 
 
 
@@ -146,14 +162,15 @@ class Views:
 
 view = Views()
 # view.bybrowser()
-# print(view.bycountry("080826024732-2c61742d5b4743f88576f5c97457b12a"))
-# print(view.bycontinent("080826024732-2c61742d5b4743f88576f5c97457b12a"))
+print(view.bycountry("100713205147-2ee05a98f1794324952eea5ca678c026"))
+print(view.bycontinent("100713205147-2ee05a98f1794324952eea5ca678c026"))
 # view.userMinutes()
 # print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))
 # print(view.docsReadByVisitor("4065369dbee2b902"))
 # print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", view.sortFunc))
 # print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", "53a376a3e4caa372", view.sortFunc))
 
-print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc))
+# print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc))
 print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", "00000000deadbeef", view.sortFunc))
+# view.writeDocSource()
 
