@@ -12,7 +12,7 @@ class Views2:
         self.browserNamesDict = {}
         self.countriesDict = {}
         self.continentsDict = {}
-        self.usersDict = {}
+        self.usersDict = {} 
         self.delete_list = []
 
     def set_file_name(self, filename):
@@ -20,8 +20,17 @@ class Views2:
         for line in open(self.file_name, 'r'):
             self.dataList.append(json.loads(line))
 
+    def clear_data(self):
+        self.browserDict.clear()
+        self.browserNamesDict.clear()
+        self.countriesDict.clear()
+        self.continentsDict.clear()
+        self.usersDict.clear()
+        self.delete_list.clear()
+
     # uses the subject_doc_id to uniquely specify a document
     def bycountry(self, docUUID):
+        self.clear_data()
         for entry in self.dataList:
             for k, v in entry.items():
                 if v == docUUID:
@@ -32,6 +41,7 @@ class Views2:
         return self.countriesDict
 
     def bycontinent(self, docUUID):
+        self.clear_data()
         for entry in self.dataList:
             for k, v in entry.items():
                 if v == docUUID:
@@ -44,6 +54,7 @@ class Views2:
 
     #Needs refactored
     def bybrowser(self):
+        self.clear_data()
         for entry in self.dataList:
             if entry["visitor_useragent"] not in self.browserDict:
                 self.browserDict.update({entry["visitor_useragent"]: 1})
@@ -70,6 +81,7 @@ class Views2:
         return self.browserNamesDict
 
     def userMinutes(self):
+        self.clear_data()
         for entry in self.dataList:
             # not all entries have even_readtime key so first check for it here
             if "event_readtime" in entry:
