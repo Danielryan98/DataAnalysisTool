@@ -25,6 +25,7 @@ class Views:
 
     # uses the subject_doc_id to uniquely specify a document
     def bycountry(self, docUUID):
+        self.countriesDict.clear() #Needed because multiple calls multiplies the data
         for entry in self.dataList:
             for k, v in entry.items():
                 if v == docUUID:
@@ -35,6 +36,7 @@ class Views:
         return self.countriesDict
 
     def bycontinent(self, docUUID):
+        self.continentsDict.clear()
         for entry in self.dataList:
             for k, v in entry.items():
                 if v == docUUID:
@@ -46,6 +48,7 @@ class Views:
         return self.continentsDict
 
     def byallbrowser(self):
+        self.browserDict.clear()
         for entry in self.dataList:
             if entry["visitor_useragent"] not in self.browserDict:
                 self.browserDict.update({entry["visitor_useragent"]: 1})
@@ -55,6 +58,16 @@ class Views:
 
     #Needs refactored
     def bybrowser(self):
+        self.browserDict.clear()
+        self.browserNamesDict.clear()
+        self.delete_list.clear()
+        for entry in self.dataList:
+            if entry["visitor_useragent"] not in self.browserDict:
+                self.browserDict.update({entry["visitor_useragent"]: 1})
+            else:
+                self.browserDict[entry["visitor_useragent"]] = self.browserDict[entry["visitor_useragent"]] + 1
+        print(self.browserDict.values())
+
         for entry in self.browserDict:
             entry_data = hp.detect(entry)
             if 'browser' in entry_data:
@@ -73,7 +86,9 @@ class Views:
             del self.browserNamesDict[browser]
         return self.browserNamesDict
 
+
     def userMinutes(self):
+        self.usersDict.clear()
         for entry in self.dataList:
             # not all entries have even_readtime key so first check for it here
             if "event_readtime" in entry:
@@ -141,6 +156,7 @@ class Views:
         xs_sort.reverse()
 
         return xs_sort
+
 
     @dispatch(object, object, object)
     def alsoLikes(self, docUUID, userUUID, sortFunc):

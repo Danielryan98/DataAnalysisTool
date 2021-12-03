@@ -8,16 +8,20 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 from PIL import ImageTk, Image
 from Views import Views
+from future.moves.tkinter import filedialog
 
 #### REMBER TO CHANGE THE DOC ID #####
 doc_id = "100806162735-00000000115598650cb8b514246272b5"
 doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b"
 
 vis_UUID = ""
-doc_UUID = "140310171202-000000002e5a8ff1f577548fec708d50"
+doc_UUID = "140207031738-eb742a5444c9b73df2d1ec9bff15dae9"
 
 class GUI:
     def __init__(self, master):
+
+        self.views = Views()
+
         self.master = master
         self.master.config(bg="white")
         self.button_theme = '#1f77b4'
@@ -47,6 +51,12 @@ class GUI:
         #Graph frame to hold the graph.
         self.graphFrame = tk.Frame(self.master)
         self.graphFrame.place(x=155, y=100)
+
+        #Upload json button.
+        self.upload_json_text = tk.StringVar()
+        self.upload_json_btn = tk.Button(self.master, textvariable=self.upload_json_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.get_file_from_user())
+        self.upload_json_text.set("Upload json")
+        self.upload_json_btn.place(x=45, y=100)
 
         #By country button.
         self.by_country_text = tk.StringVar()
@@ -84,8 +94,14 @@ class GUI:
         self.tutorial_text.set("Tutorial")
         self.tutorial_btn.place(x=45, y=510)
 
-        self.paint_logo
+        self.paint_logo()
+        
 
+
+    def get_file_from_user(self):
+        file = filedialog.askopenfilename()
+        if file: #If they choose a file rather than cancelling           
+            self.views.set_file_name(file)
 
     def paint_logo(self):
         global img
@@ -93,22 +109,19 @@ class GUI:
         img= (Image.open(path))
         img = img.resize((425,100), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
-        panel = tk.Label(window, image=img, height=100, width=425, bd=0)
+        panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
         panel.place(x=625, y=0)
 
     def by_country_plot(self, doc_id):
-        instance = Views("sample_100k_lines.json")
-        browser_dict = instance.bycountry(doc_id)
+        browser_dict = self.views.bycountry(doc_id)
         self.plot(browser_dict)
 
     def by_continent_plot(self, doc_id):
-        instance = Views("sample_100k_lines.json")
-        browser_dict = instance.bycontinent(doc_id)
+        browser_dict = self.views.bycontinent(doc_id)
         self.plot(browser_dict)
 
     def by_browser_plot(self):
-        instance = Views("sample_100k_lines.json")
-        browser_dict = instance.bybrowser()
+        browser_dict = self.views.bybrowser()
         self.plot(browser_dict)
 
     def plot(self, browser_dict):
@@ -173,11 +186,8 @@ class GUI:
         #Clear the canvas.
         self.clear_widgets()
 
-        #Views instance to grab data from.
-        views = Views("sample_100k_lines.json")
-
         #Format the key data so that it's in format 300k, 1m, 3m etc.
-        data_size = self.format_number(views.dataList.__len__())
+        data_size = self.format_number(self.views.dataList.__len__())
 
         #Slice the id's so that we only work with the last 4 characters. 
         main_user_id = vis_UUID[-4:]
@@ -200,7 +210,7 @@ class GUI:
         dot.node('Documents', 'Documents', shape='none')
         dot.edge('Readers', 'Documents', label='Size: ' + data_size)
 
-        for x in xs_sort:
+        for x in xs_sort[:11]:
             if x[1] == main_doc_id:
                 dot.node(x[1], x[1], shape=has_read_shape, color='green', style='filled')
             else:
@@ -240,13 +250,10 @@ class GUI:
         canvas.get_tk_widget().pack()
 
     def determine_func(self):
-
-        views = Views("sample_100k_lines.json")
-
         if doc_UUID and vis_UUID:      
-            self.make_graph(views.alsoLikes(doc_UUID, vis_UUID, views.sortFunc))
+            self.make_graph(self.views.alsoLikes(doc_UUID, vis_UUID, self.views.sortFunc))
         else:
-            self.make_graph(views.alsoLikes(doc_UUID, views.sortFunc))
+            self.make_graph(self.views.alsoLikes(doc_UUID, self.views.sortFunc))
 
 def main():
     root = tk.Tk()
