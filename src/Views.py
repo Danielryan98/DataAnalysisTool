@@ -171,6 +171,9 @@ class Views:
         xs_sort.sort()
         xs_sort.reverse()
 
+        print(xs_sort)
+        print(alsoLikesDict)
+
         return xs_sort, alsoLikesDict
 
 def main(argv):
