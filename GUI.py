@@ -19,6 +19,8 @@ doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b"
 vis_UUID = ""
 doc_UUID = "140207031738-eb742a5444c9b73df2d1ec9bff15dae9"
 
+
+
 #Start of window.
 window = tk.Tk()
 
@@ -108,10 +110,10 @@ tutorial_text.set("Tutorial")
 tutorial_btn.place(x=45, y=510)
 
 def get_file_from_user():
-    file = tk.filedialog.askopenfile(parent=window, mode='r', title="Select a JSON file", filetype=[("JSON", ".json")]) #Prompt user to choose file to upload documenmts for
+    file = filedialog.askopenfilename()
     if file: #If they choose a file rather than cancelling
         views = Views()
-        views.__init__(file.name)
+        views.set_file_name(file)
 
 
 def by_country_plot(doc_id):
