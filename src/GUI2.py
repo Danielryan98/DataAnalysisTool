@@ -1,4 +1,7 @@
 import tkinter as tk
+from tkinter import font
+from tkinter.constants import DISABLED
+from matplotlib import use
 import matplotlib.pyplot as plt
 import graphviz as gv
 from subprocess import check_call
@@ -61,25 +64,43 @@ class GUI:
         self.by_continent_text = tk.StringVar()
         self.by_continent_btn = tk.Button(self.master, textvariable=self.by_continent_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_continent_plot())
         self.by_continent_text.set("By Continent")
-        self.by_continent_btn.place(x=45, y=230)
+        self.by_continent_btn.place(x=45, y=220)
 
         #By browser button.
         self.by_browser_text = tk.StringVar()
         self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot())
         self.by_browser_text.set("By Browser")
-        self.by_browser_btn.place(x=45, y=300)
+        self.by_browser_btn.place(x=45, y=280)
+
+        #Reader profiles button.
+        self.reader_profiles_text = tk.StringVar()
+        self.reader_profiles_btn = tk.Button(self.master, textvariable=self.reader_profiles_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.reader_profiles())
+        self.reader_profiles_text.set("Reader Profiles")
+        self.reader_profiles_btn.place(x=45, y=340)
 
         #Also likes button.
         self.also_likes_text = tk.StringVar()
         self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikes())
         self.also_likes_text.set("Also Likes")
-        self.also_likes_btn.place(x=45, y=370)
+        self.also_likes_btn.place(x=45, y=400)
 
         #Also likes graph button.
         self.also_likes_graph_text = tk.StringVar()
         self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
         self.also_likes_graph_text.set("Also Likes Graph")
-        self.also_likes_graph_btn.place(x=45, y=440)
+        self.also_likes_graph_btn.place(x=45, y=460)
+
+        #History button.
+        self.history_text = tk.StringVar()
+        self.history_btn = tk.Button(self.master, textvariable=self.history_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
+        self.history_text.set("History")
+        self.history_btn.place(x=45, y=520)
+
+        #how_to button.
+        self.how_to_text = tk.StringVar()
+        self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
+        self.how_to_text.set("How-to")
+        self.how_to_btn.place(x=45, y=580)
 
         self.paint_logo()
 
@@ -167,8 +188,10 @@ class GUI:
             num /= 1000.0
         return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
-    def make_list(self, xs_sort):
-        print(xs_sort[:11])
+    def reader_profiles(self):
+
+        users_dict = self.views.userMinutes()
+
         self.clear_widgets()
 
         # the figure that will contain the plot
@@ -181,13 +204,14 @@ class GUI:
         # placing the canvas on the Tkinter window
         canvas.get_tk_widget().pack()
 
-        list_of_docs = tk.Text(self.graphFrame, width=100, height=25)
-        
-        for x in xs_sort[:11]:
-            for y in x:
-                list_of_docs.insert(tk.END, str(y[1]) + " : " + str(y[0]) + "\n")
-                print(str(y[1]) + " : " + str(y[0]))
-        list_of_docs.place(x=100, y=25)   
+        list_of_readers = tk.Text(self.graphFrame, width=100, height=25)
+
+        users_dict = dict(reversed(list(users_dict.items())[:10]))
+        for k in users_dict:
+            list_of_readers.insert(1.0, str(k) + " : " + str(users_dict[k]) + "\n")
+        list_of_readers.place(x=100, y=25)   
+
+    
 
     def alsoLikes(self):
         # get doc_id from input
