@@ -44,7 +44,7 @@ visitor_uuid.place(x=150, y=63)
 
 def paint_logo():
     global img
-    path = "IP_LOGO.jpg"
+    path = "logonew.jpg"
     img= (Image.open(path))
     img = img.resize((425,100), Image.ANTIALIAS)
     img = ImageTk.PhotoImage(img)
