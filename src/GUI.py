@@ -11,11 +11,8 @@ from Views import Views
 from future.moves.tkinter import filedialog
 
 #### REMBER TO CHANGE THE DOC ID #####
-doc_id = "100806162735-00000000115598650cb8b514246272b5"
-doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b"
-
-vis_UUID = "00000000deadbeef"
-doc_UUID = "100806162735-00000000115598650cb8b514246272b"
+vis_UUID = "000000000deadbeef"
+doc_UUID = "100806162735-00000000115598650cb8b514246272b5"
 
 class GUI:
     def __init__(self, master):
@@ -64,13 +61,13 @@ class GUI:
 
         #By country button.
         self.by_country_text = tk.StringVar()
-        self.by_country_btn = tk.Button(self.master, textvariable=self.by_country_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_country_plot(doc_id))
+        self.by_country_btn = tk.Button(self.master, textvariable=self.by_country_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_country_plot(doc_UUID))
         self.by_country_text.set("By Country")
         self.by_country_btn.place(x=45, y=160)
 
         #By continent button.
         self.by_continent_text = tk.StringVar()
-        self.by_continent_btn = tk.Button(self.master, textvariable=self.by_continent_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_continent_plot(doc_id))
+        self.by_continent_btn = tk.Button(self.master, textvariable=self.by_continent_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_continent_plot(doc_UUID))
         self.by_continent_text.set("By Continent")
         self.by_continent_btn.place(x=45, y=230)
 
