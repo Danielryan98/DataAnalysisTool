@@ -167,22 +167,11 @@ class Views:
             xs = xs | set(alsoLikesDict[k])
         xs_sort = [[sortFunc(x,alsoLikesDict), x] for x in xs]
 
-        # appends a list of visitors who have read the document
-        for k in xs_sort:
-            userUUIDs = []
-            for x in alsoLikesDict:
-                for docUUID in alsoLikesDict[x]:
-                    if docUUID == k[1]:
-                        userUUIDs.append(x[-4:])
-            k.append(userUUIDs)
-            # get the last 4 hex-digits of the document UUID
-            k[1] = k[1][-4:]
-
         # sort on a tuple sorts on the first element
         xs_sort.sort()
         xs_sort.reverse()
 
-        return xs_sort
+        return xs_sort, alsoLikesDict
 
 def main(argv):
     user_uuid = ""

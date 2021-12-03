@@ -14,8 +14,8 @@ from future.moves.tkinter import filedialog
 doc_id = "100806162735-00000000115598650cb8b514246272b5"
 doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b"
 
-vis_UUID = ""
-doc_UUID = "140207031738-eb742a5444c9b73df2d1ec9bff15dae9"
+vis_UUID = "00000000deadbeef"
+doc_UUID = "100806162735-00000000115598650cb8b514246272b"
 
 class GUI:
     def __init__(self, master):
@@ -294,6 +294,8 @@ class GUI:
         if type == self.GRAPH:
             if doc_UUID and vis_UUID:    
                 xs_sort, alsoLikesDict = self.views.alsoLikes(doc_UUID, vis_UUID, self.views.sortFunc)
+                print(xs_sort)
+                print(alsoLikesDict)
                 self.make_graph(xs_sort, alsoLikesDict)
             else:
                 xs_sort, alsoLikesDict = self.views.alsoLikes(doc_UUID, self.views.sortFunc)
