@@ -140,22 +140,14 @@ class Views:
             xs = xs | set(alsoLikesDict[k])
         xs_sort = [[sortFunc(x,alsoLikesDict), x] for x in xs]
 
-        # appends a list of visitors who have read the document
-        for k in xs_sort:
-            userUUIDs = []
-            for x in alsoLikesDict:
-                for docUUID in alsoLikesDict[x]:
-                    if docUUID == k[1]:
-                        userUUIDs.append(x[-4:])
-            k[1] = k[1][-4:]
-            k.append(userUUIDs)
+        
 
         # sort() method sorts on first element of nested list 
         xs_sort.sort()
         # reverse the list to get most read document first
         xs_sort.reverse()
 
-        return xs_sort
+        return xs_sort, alsoLikesDict
 
 
     @dispatch(object, object, object)

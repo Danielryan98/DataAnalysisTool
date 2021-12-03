@@ -22,6 +22,10 @@ class GUI:
 
         self.views = Views()
 
+        #Make-shift Constants
+        self.LIST = "List"
+        self.GRAPH = "Graph"
+
         self.master = master
         self.master.config(bg="white")
         self.button_theme = '#1f77b4'
@@ -78,19 +82,19 @@ class GUI:
 
         #Also likes button.
         self.also_likes_text = tk.StringVar()
-        self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.determine_func())
+        self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.determine_func(self.LIST))
         self.also_likes_text.set("Also Likes")
         self.also_likes_btn.place(x=45, y=370)
 
         #Also likes graph button.
         self.also_likes_graph_text = tk.StringVar()
-        self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.determine_func())
+        self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.determine_func(self.GRAPH))
         self.also_likes_graph_text.set("Also Likes Graph")
         self.also_likes_graph_btn.place(x=45, y=440)
 
         #Walkthrough button.
         self.tutorial_text = tk.StringVar()
-        self.tutorial_btn = tk.Button(self.master, textvariable=self.tutorial_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.determine_func())
+        self.tutorial_btn = tk.Button(self.master, textvariable=self.tutorial_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : print("Tutorial"))
         self.tutorial_text.set("Tutorial")
         self.tutorial_btn.place(x=45, y=510)
 
@@ -170,6 +174,8 @@ class GUI:
         for widget in self.graphFrame.winfo_children():
             widget.destroy()
 
+ 
+
     def format_number(self, num):
         num = float('{:.3g}'.format(num))
         magnitude = 0
@@ -178,13 +184,47 @@ class GUI:
             num /= 1000.0
         return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
-    def make_list(self, xs_sort):
-        print(xs_sort)
 
-    def make_graph(self, xs_sort):
+    def make_list(self, xs_sort):
+        print(xs_sort[:11])
+        self.clear_widgets()
+
+        # the figure that will contain the plot
+        fig = Figure(figsize = (10, 5),
+                dpi = 100)    
+
+        canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
+        canvas.draw()
+
+        # placing the canvas on the Tkinter window
+        canvas.get_tk_widget().pack()
+
+        list_of_docs = tk.Text(self.graphFrame, width=100, height=25)
+        
+        for x in xs_sort[:11]:
+            for y in x:
+                list_of_docs.insert(tk.END, str(y[1]) + " : " + str(y[0]) + "\n")
+                print(str(y[1]) + " : " + str(y[0]))
+        list_of_docs.place(x=100, y=25)        
+
+    def slice_identifiers(self, xs_sort, alsoLikesDict):
+        # appends a list of visitors who have read the document
+        for k in xs_sort:
+            userUUIDs = []
+            for x in alsoLikesDict:
+                for docUUID in alsoLikesDict[x]:
+                    if docUUID == k[1]:
+                        userUUIDs.append(x[-4:])
+            k[1] = k[1][-4:]
+            k.append(userUUIDs)
+
+
+    def make_graph(self, xs_sort, alsoLikesDict):
 
         #Clear the canvas.
         self.clear_widgets()
+
+        self.slice_identifiers(xs_sort, alsoLikesDict)
 
         #Format the key data so that it's in format 300k, 1m, 3m etc.
         data_size = self.format_number(self.views.dataList.__len__())
@@ -249,11 +289,20 @@ class GUI:
         # placing the canvas on the Tkinter window
         canvas.get_tk_widget().pack()
 
-    def determine_func(self):
-        if doc_UUID and vis_UUID:      
-            self.make_graph(self.views.alsoLikes(doc_UUID, vis_UUID, self.views.sortFunc))
+    def determine_func(self, type):
+        #NEEDS AN EXCEPTION FOR UNPROVIDED UUIDS
+        if type == self.GRAPH:
+            if doc_UUID and vis_UUID:    
+                xs_sort, alsoLikesDict = self.views.alsoLikes(doc_UUID, vis_UUID, self.views.sortFunc)
+                self.make_graph(xs_sort, alsoLikesDict)
+            else:
+                xs_sort, alsoLikesDict = self.views.alsoLikes(doc_UUID, self.views.sortFunc)
+                self.make_graph(xs_sort, alsoLikesDict)
         else:
-            self.make_graph(self.views.alsoLikes(doc_UUID, self.views.sortFunc))
+            if doc_UUID and vis_UUID:      
+                self.make_list(self.views.alsoLikes(doc_UUID, vis_UUID, self.views.sortFunc))
+            else:
+                self.make_list(self.views.alsoLikes(doc_UUID, self.views.sortFunc))
 
 def main():
     root = tk.Tk()
