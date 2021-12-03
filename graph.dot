@@ -1,26 +1,5 @@
 digraph "also likes" {
 	Readers [label=Readers shape=none]
 	Documents [label=Documents shape=none]
-	Readers -> Documents [label="Size: 400K"]
-	"8d50" [label="8d50" color=green shape=circle style=filled]
-	"8a3e" [label="8a3e" shape=box]
-	"8a3e" -> "8d50"
-	b902 [label=b902 shape=box]
-	b902 -> "8d50"
-	"862b" [label="862b" shape=circle]
-	"8a3e" [label="8a3e" shape=box]
-	"8a3e" -> "862b"
-	b902 [label=b902 shape=box]
-	b902 -> "862b"
-	"012b" [label="012b" shape=circle]
-	"8a3e" [label="8a3e" shape=box]
-	"8a3e" -> "012b"
-	b902 [label=b902 shape=box]
-	b902 -> "012b"
-	c076 [label=c076 shape=circle]
-	b902 [label=b902 shape=box]
-	b902 -> c076
-	aa0e [label=aa0e shape=circle]
-	"8a3e" [label="8a3e" shape=box]
-	"8a3e" -> aa0e
+	Readers -> Documents [label="Size: 102K"]
 }

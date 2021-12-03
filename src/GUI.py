@@ -10,7 +10,7 @@ from PIL import ImageTk, Image
 from Views import Views
 
 #### REMBER TO CHANGE THE DOC ID #####
-doc_id = "100713205147-2ee05a98f1794324952eea5ca678c026"
+doc_id = "100806162735-00000000115598650cb8b514246272b5"
 doc_id1 = "140310170010-0000000067dc80801f1df696ae52862b"
 
 vis_UUID = ""

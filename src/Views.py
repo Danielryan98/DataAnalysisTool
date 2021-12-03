@@ -7,7 +7,7 @@ from multipledispatch import dispatch
 class Views:
     def __init__(self):
         self.dataList = []
-        for line in open('sample_400k_lines.json', 'r', encoding='utf-8'):
+        for line in open('sample_100k_lines.json', 'r', encoding='utf-8'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
