@@ -6,11 +6,9 @@ import httpagentparser as hp
 from multipledispatch import dispatch
 
 class Views:
-    def __init__(self, file_name):
+    def __init__(self):
         self.dataList = []
-        self.file_name = file_name
-        for line in open(file_name, 'r'):
-            self.dataList.append(json.loads(line))
+        self.file_name = ""
 
         self.browserDict = {}
         self.browserNamesDict = {}
@@ -18,6 +16,12 @@ class Views:
         self.continentsDict = {}
         self.usersDict = {}
         self.delete_list = []
+
+    def set_file_name(self, filename):
+        self.file_name = filename
+        for line in open(self.file_name, 'r'):
+            self.dataList.append(json.loads(line))
+
 
     # uses the subject_doc_id to uniquely specify a document
     def bycountry(self, docUUID):
