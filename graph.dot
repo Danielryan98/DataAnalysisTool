@@ -2,4 +2,12 @@ digraph "also likes" {
 	Readers [label=Readers shape=none]
 	Documents [label=Documents shape=none]
 	Readers -> Documents [label="Size: 102K"]
+	adbe [label=adbe color=green shape=circle style=filled]
+	f4ef [label=f4ef shape=box]
+	f4ef -> adbe
+	beef [label=beef color=green shape=box style=filled]
+	beef -> adbe
+	ecbe [label=ecbe shape=circle]
+	f4ef [label=f4ef shape=box]
+	f4ef -> ecbe
 }
