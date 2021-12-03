@@ -1,3 +1,4 @@
+import sys, getopt
 import json
 import re
 import pycountry_convert as pc
@@ -5,9 +6,10 @@ import httpagentparser as hp
 from multipledispatch import dispatch
 
 class Views:
-    def __init__(self):
+    def __init__(self, file_name):
         self.dataList = []
-        for line in open('sample_100k_lines.json', 'r', encoding='utf-8'):
+        self.file_name = file_name
+        for line in open(file_name, 'r'):
             self.dataList.append(json.loads(line))
 
         self.browserDict = {}
@@ -39,15 +41,16 @@ class Views:
                         self.continentsDict[continent] = self.continentsDict[continent] + 1
         return self.continentsDict
 
-    #Needs refactored
-    def bybrowser(self):
+    def byallbrowser(self):
         for entry in self.dataList:
             if entry["visitor_useragent"] not in self.browserDict:
                 self.browserDict.update({entry["visitor_useragent"]: 1})
             else:
                 self.browserDict[entry["visitor_useragent"]] = self.browserDict[entry["visitor_useragent"]] + 1
-        print(self.browserDict.values())
+        return self.browserDict
 
+    #Needs refactored
+    def bybrowser(self):
         for entry in self.browserDict:
             entry_data = hp.detect(entry)
             if 'browser' in entry_data:
@@ -92,8 +95,9 @@ class Views:
         # so make a set to get rid of duplicates
         docUUIDs = []
         for entry in self.dataList:
-            if entry["event_type"] == "read" and entry["visitor_uuid"] == visUUID and entry["subject_doc_id"] not in docUUIDs:
-                docUUIDs.append(entry["subject_doc_id"])
+            if entry["event_type"] == "read" and entry["visitor_uuid"] == visUUID:
+                if entry["subject_doc_id"] not in docUUIDs:
+                    docUUIDs.append(entry["subject_doc_id"])
         return docUUIDs
 
     def sortFunc(self, x, dict):
@@ -168,32 +172,50 @@ class Views:
 
         return xs_sort
 
-    def writeDocSource(self):
-        alsoLikesList = self.alsoLikes("100806162735-00000000115598650cb8b514246272b5", view.sortFunc)
+def main(argv):
+    user_uuid = ""
+    doc_uuid = ""
+    task_id = ""
+    file_name = ""
+    try:
+        # string of option letter that the program recognises. Options that require an argument are followed by a semicolon
+        opts, args = getopt.getopt(argv, "hu:d:t:f:")
+    except getopt.GetoptError:
+        print("cw2 -u <user_uuid> -d <doc_uuid> -t <task_id> -f <file_name>")
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print("cw2 -u <user_uuid> -d <doc_uuid> -t <task_id> -f <file_name>")
+            sys.exit()
+        elif opt == '-u':
+            user_uuid = arg
+        elif opt == '-d':
+            doc_uuid = arg
+        elif opt == '-t':
+            task_id = arg
+        elif opt == '-f':
+            file_name = arg
 
-        # make labels
-        for lst in alsoLikesList:
-            print(lst)
+    view = Views(file_name)
 
+    # run task
+    if task_id == "2a":
+        print(view.bycountry(doc_uuid))
+    elif task_id == "2b":
+        print(view.bycontinent(doc_uuid))
+    elif task_id == "3a":
+        print(view.byallbrowser())
+    elif task_id == "3b":
+        print(view.bybrowser()) # <----------------------------------- returns an empty dict atm. needs fixing
+    # elif task_id == "4":
 
+    # elif task_id == "5d":
 
+    # elif task_id == "6":
 
+    # elif task_id == "7":
 
-    
-
-view = Views()
-# view.bybrowser()
-# print(view.bycountry("100713205147-2ee05a98f1794324952eea5ca678c026"))
-# print(view.bycontinent("100713205147-2ee05a98f1794324952eea5ca678c026"))
-# view.userMinutes()
-# print(view.readersOfDoc("140310170010-0000000067dc80801f1df696ae52862b"))
-
-# 100k tests
-# print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", "00000000deadbeef", view.sortFunc))
-# print(view.alsoLikes("aaaaaaaaaaaa-00000000df1ad06a86c40000000feadbe", " 00000000deadbeef", view.sortFunc))
-
-# 400k tests
-# print(view.alsoLikes("140310170010-0000000067dc80801f1df696ae52862b", view.sortFunc))
-# print(view.alsoLikes("140310171202-000000002e5a8ff1f577548fec708d50", view.sortFunc))
+if __name__ == "__main__":
+   main(sys.argv[1:])
 
 
