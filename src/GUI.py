@@ -84,7 +84,7 @@ class GUI:
         self.tutorial_text.set("Tutorial")
         self.tutorial_btn.place(x=45, y=510)
 
-        self.paint_logo
+        self.paint_logo()
 
 
     def paint_logo(self):
@@ -93,7 +93,7 @@ class GUI:
         img= (Image.open(path))
         img = img.resize((425,100), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
-        panel = tk.Label(window, image=img, height=100, width=425, bd=0)
+        panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
         panel.place(x=625, y=0)
 
     def by_country_plot(self, doc_id):
