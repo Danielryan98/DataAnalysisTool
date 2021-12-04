@@ -14,6 +14,7 @@ class Views2:
         self.continentsDict = {}
         self.usersDict = {} 
         self.delete_list = []
+        self.history_dict = {}
 
     def set_file_name(self, filename):
         self.file_name = filename

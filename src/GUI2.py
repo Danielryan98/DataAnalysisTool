@@ -211,7 +211,9 @@ class GUI:
             list_of_readers.insert(1.0, str(k) + " : " + str(users_dict[k]) + "\n")
         list_of_readers.place(x=100, y=25)   
 
-    
+    def add_to_history(self, doc_uuid, vis_uuid):
+        print("will show doc uuid : vis_uuid")
+        
 
     def alsoLikes(self):
         # get doc_id from input
