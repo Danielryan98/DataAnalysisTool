@@ -17,6 +17,8 @@ class Views2:
         self.history_dict = {}
         self.current_doc_uuid = ""
         self.current_vis_uuid = ""
+        self.BROWSER_FULL = "FULL"
+        self.BROWSER_SHORT = "SHORT"
 
     def set_file_name(self, filename):
         self.file_name = filename
@@ -61,7 +63,7 @@ class Views2:
         return self.continentsDict
 
     #Needs refactored
-    def bybrowser(self):
+    def bybrowser(self, type):
         self.clear_data()
         for entry in self.dataList:
             if entry["visitor_useragent"] not in self.browserDict:
@@ -69,24 +71,26 @@ class Views2:
             else:
                 self.browserDict[entry["visitor_useragent"]] = self.browserDict[entry["visitor_useragent"]] + 1
         print(self.browserDict.values())
-
-        for entry in self.browserDict:
-            entry_data = hp.detect(entry)
-            if 'browser' in entry_data:
-                x = entry_data.get("browser")
-                x = x.get('name')
-                if x not in self.browserNamesDict:
-                    self.browserNamesDict.update({x: 1})
-                else:
-                    self.browserNamesDict[x] = self.browserNamesDict[x] + 1
-        self.browserNamesDict["Other"] = 0
-        for browser, count in self.browserNamesDict.items():
-            if count < 50:
-                self.browserNamesDict["Other"] += count
-                self.delete_list.append(browser)
-        for browser in self.delete_list:
-            del self.browserNamesDict[browser]
-        return self.browserNamesDict
+        if type == self.BROWSER_SHORT:
+            for entry in self.browserDict:
+                entry_data = hp.detect(entry)
+                if 'browser' in entry_data:
+                    x = entry_data.get("browser")
+                    x = x.get('name')
+                    if x not in self.browserNamesDict:
+                        self.browserNamesDict.update({x: 1})
+                    else:
+                        self.browserNamesDict[x] = self.browserNamesDict[x] + 1
+            self.browserNamesDict["Other"] = 0
+            for browser, count in self.browserNamesDict.items():
+                if count < 50:
+                    self.browserNamesDict["Other"] += count
+                    self.delete_list.append(browser)
+            for browser in self.delete_list:
+                del self.browserNamesDict[browser]
+            return self.browserNamesDict
+        else:
+            return self.browserDict
 
     def userMinutes(self):
         self.clear_data()

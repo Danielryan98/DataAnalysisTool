@@ -21,9 +21,10 @@ class GUI2:
         self.views = Views2()
 
         self.master = master
+        self.master.resizable('false', 'false')
         self.master.config(bg="white")
         self.button_theme = '#1f77b4'
-        self.master.geometry("1100x650")
+        self.master.geometry("1100x700")
 
         #Document ID Input Label.
         self.document_uuid_label = tk.Label(self.master, text="document_uuid", font="Arial", height=2, width=12, bg="white")
@@ -35,11 +36,11 @@ class GUI2:
 
         #User ID Input Label.
         self.visitor_uuid_label = tk.Label(self.master, text="visitor_uuid", font="Arial", height=2, width=12, bg="white")
-        self.visitor_uuid_label.place(x=45, y=51)
+        self.visitor_uuid_label.place(x=45, y=53)
 
         #User ID Input Box.
         self.visitor_uuid = ttk.Combobox(self.master, width=75, postcommand=lambda:self.update_vis_history_list()) 
-        self.visitor_uuid.place(x=150, y=63)
+        self.visitor_uuid.place(x=150, y=65)
 
         #Toolbar frame to hold toolbar.
         self.toolbarFrame = tk.Frame(self.master)
@@ -68,35 +69,41 @@ class GUI2:
         self.by_continent_text.set("By Continent")
         self.by_continent_btn.place(x=45, y=245)
 
+        #By browser full button.
+        self.by_browser_full_text = tk.StringVar()
+        self.by_browser_full_btn = tk.Button(self.master, textvariable=self.by_browser_full_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot(self.views.BROWSER_FULL))
+        self.by_browser_full_text.set("By Browser (Full)")
+        self.by_browser_full_btn.place(x=45, y=305)
+
         #By browser button.
         self.by_browser_text = tk.StringVar()
-        self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot())
-        self.by_browser_text.set("By Browser")
-        self.by_browser_btn.place(x=45, y=305)
+        self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot(self.views.BROWSER_SHORT))
+        self.by_browser_text.set("By Browser (Short)")
+        self.by_browser_btn.place(x=45, y=365)
 
         #Reader profiles button.
         self.reader_profiles_text = tk.StringVar()
         self.reader_profiles_btn = tk.Button(self.master, textvariable=self.reader_profiles_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.reader_profiles())
         self.reader_profiles_text.set("Reader Profiles")
-        self.reader_profiles_btn.place(x=45, y=365)
+        self.reader_profiles_btn.place(x=45, y=425)
 
         #Also likes button.
         self.also_likes_text = tk.StringVar()
         self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikes())
         self.also_likes_text.set("Also Likes")
-        self.also_likes_btn.place(x=45, y=425)
+        self.also_likes_btn.place(x=45, y=485)
 
         #Also likes graph button.
         self.also_likes_graph_text = tk.StringVar()
         self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
         self.also_likes_graph_text.set("Also Likes Graph")
-        self.also_likes_graph_btn.place(x=45, y=485)
+        self.also_likes_graph_btn.place(x=45, y=545)
 
         #how_to button.
         self.how_to_text = tk.StringVar()
         self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
         self.how_to_text.set("How-to")
-        self.how_to_btn.place(x=45, y=545)
+        self.how_to_btn.place(x=45, y=605)
 
         self.paint_logo()
 
@@ -112,7 +119,7 @@ class GUI2:
         img = img.resize((425,100), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
-        panel.place(x=625, y=0)
+        panel.place(x=640, y=5)
 
     def update_doc_history_list(self):
         doc_hist_list = []
@@ -188,8 +195,8 @@ class GUI2:
             self.document_uuid.delete(0, 'end')
             self.document_uuid.insert(0, "Not a valid document UUID. Please enter another one...")
 
-    def by_browser_plot(self):
-        browser_dict = self.views.bybrowser()
+    def by_browser_plot(self, type):
+        browser_dict = self.views.bybrowser(type)
         self.plot(browser_dict)
 
     def plot(self, browser_dict):
@@ -208,8 +215,6 @@ class GUI2:
             x_items.append(k)
             y_items.append(v)
 
-        x = x_items
-        y = y_items
 
         #Figure that will contain the plot.
         fig = Figure(figsize = (10, 5),
@@ -217,7 +222,7 @@ class GUI2:
 
         # Create the subplot. Set x & y and bar thickness. Plot the graph.
         plot1 = fig.add_subplot(111)
-        plot1.bar(x, y, .5)
+        plot1.bar(x_items, y_items, .5)
         plot1.plot()
 
         # creating the Tkinter canvas containing the Matplotlib figure,
