@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import font
+from tkinter import ttk
 from tkinter.constants import DISABLED
 from matplotlib import use
 import matplotlib.pyplot as plt
@@ -28,7 +28,7 @@ class GUI2:
         self.document_uuid_label.place(x=30, y=20)
 
         #Document ID Input Box.
-        self.document_uuid = tk.Entry(self.master, width=75, borderwidth=2) 
+        self.document_uuid = ttk.Combobox(self.master, width=75, postcommand=lambda:self.update_doc_history_list()) 
         self.document_uuid.place(x=150, y=32)
 
         #User ID Input Label.
@@ -36,7 +36,7 @@ class GUI2:
         self.visitor_uuid_label.place(x=45, y=51)
 
         #User ID Input Box.
-        self.visitor_uuid = tk.Entry(self.master, width=75, borderwidth=2) 
+        self.visitor_uuid = ttk.Combobox(self.master, width=75, postcommand=lambda:self.update_vis_history_list()) 
         self.visitor_uuid.place(x=150, y=63)
 
         #Toolbar frame to hold toolbar.
@@ -52,55 +52,49 @@ class GUI2:
         self.upload_json_text = tk.StringVar()
         self.upload_json_btn = tk.Button(self.master, textvariable=self.upload_json_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.get_file_from_user())
         self.upload_json_text.set("Upload json")
-        self.upload_json_btn.place(x=45, y=100)
+        self.upload_json_btn.place(x=45, y=125)
 
         #By country button.
         self.by_country_text = tk.StringVar()
         self.by_country_btn = tk.Button(self.master, textvariable=self.by_country_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_country_plot())
         self.by_country_text.set("By Country")
-        self.by_country_btn.place(x=45, y=160)
+        self.by_country_btn.place(x=45, y=185)
 
         #By continent button.
         self.by_continent_text = tk.StringVar()
         self.by_continent_btn = tk.Button(self.master, textvariable=self.by_continent_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda: self.by_continent_plot())
         self.by_continent_text.set("By Continent")
-        self.by_continent_btn.place(x=45, y=220)
+        self.by_continent_btn.place(x=45, y=245)
 
         #By browser button.
         self.by_browser_text = tk.StringVar()
         self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot())
         self.by_browser_text.set("By Browser")
-        self.by_browser_btn.place(x=45, y=280)
+        self.by_browser_btn.place(x=45, y=305)
 
         #Reader profiles button.
         self.reader_profiles_text = tk.StringVar()
         self.reader_profiles_btn = tk.Button(self.master, textvariable=self.reader_profiles_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.reader_profiles())
         self.reader_profiles_text.set("Reader Profiles")
-        self.reader_profiles_btn.place(x=45, y=340)
+        self.reader_profiles_btn.place(x=45, y=365)
 
         #Also likes button.
         self.also_likes_text = tk.StringVar()
         self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikes())
         self.also_likes_text.set("Also Likes")
-        self.also_likes_btn.place(x=45, y=400)
+        self.also_likes_btn.place(x=45, y=425)
 
         #Also likes graph button.
         self.also_likes_graph_text = tk.StringVar()
         self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
         self.also_likes_graph_text.set("Also Likes Graph")
-        self.also_likes_graph_btn.place(x=45, y=460)
-
-        #History button.
-        self.history_text = tk.StringVar()
-        self.history_btn = tk.Button(self.master, textvariable=self.history_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
-        self.history_text.set("History")
-        self.history_btn.place(x=45, y=520)
+        self.also_likes_graph_btn.place(x=45, y=485)
 
         #how_to button.
         self.how_to_text = tk.StringVar()
         self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
         self.how_to_text.set("How-to")
-        self.how_to_btn.place(x=45, y=580)
+        self.how_to_btn.place(x=45, y=545)
 
         self.paint_logo()
 
@@ -117,6 +111,55 @@ class GUI2:
         img = ImageTk.PhotoImage(img)
         panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
         panel.place(x=625, y=0)
+
+    def update_doc_history_list(self):
+        doc_hist_list = []
+        with open("doc_history.txt", "r+") as file:
+            doc_hist_list = [line.rstrip() for line in file]
+        file.close()
+        doc_hist_list.reverse()
+        self.document_uuid['values'] = doc_hist_list
+
+    def add_doc_history(self, docUUID):
+        if docUUID:
+            lines = []
+            with open("doc_history.txt", "r+") as file:
+                lines = [line.rstrip() for line in file]
+                file.truncate(0)
+                file.close()
+            with open("doc_history.txt", "r+") as file:
+                for line in lines:
+                    if line == docUUID:
+                        lines.remove(line)
+                lines.append(docUUID)
+                for line in lines:
+                    file.write(line+"\n")
+                file.close()
+        
+    def update_vis_history_list(self):
+        vis_hist_list = []
+        with open("vis_history.txt", "r+") as file:
+            vis_hist_list = [line.rstrip() for line in file]
+        file.close()
+        vis_hist_list.reverse()
+        self.visitor_uuid['values'] = vis_hist_list
+
+    def add_vis_history(self, visUUID):
+        if visUUID:
+            lines = []
+            with open("vis_history.txt", "r+") as file:
+                lines = [line.rstrip() for line in file]
+                file.truncate(0)
+                file.close()
+            with open("vis_history.txt", "r+") as file:
+                for line in lines:
+                    if line == visUUID:
+                        lines.remove(line)
+                lines.append(visUUID)
+                for line in lines:
+                    file.write(line+"\n")
+                file.close()
+
 
     def by_country_plot(self):
         # get doc_id from input
@@ -135,6 +178,9 @@ class GUI2:
         self.plot(browser_dict)
 
     def plot(self, browser_dict):
+
+        self.add_vis_history(self.visitor_uuid.get())
+        self.add_doc_history(self.document_uuid.get())
 
         self.clear_widgets()
 
@@ -192,6 +238,9 @@ class GUI2:
 
         users_dict = self.views.userMinutes()
 
+        self.add_vis_history(self.visitor_uuid.get())
+        self.add_doc_history(self.document_uuid.get())
+
         self.clear_widgets()
 
         # the figure that will contain the plot
@@ -210,12 +259,11 @@ class GUI2:
         for k in users_dict:
             list_of_readers.insert(1.0, str(k) + " : " + str(users_dict[k]) + "\n")
         list_of_readers.place(x=100, y=25)   
-
-    def add_to_history(self, doc_uuid, vis_uuid):
-        print("will show doc uuid : vis_uuid")
-        
+ 
 
     def alsoLikes(self):
+        self.add_vis_history(self.visitor_uuid.get())
+        self.add_doc_history(self.document_uuid.get())
         # get doc_id from input
         doc_id = self.document_uuid.get()
         # get vis_id from input
@@ -318,7 +366,7 @@ class GUI2:
 
 def main():
     root = tk.Tk()
-    app = GUI(root)
+    app = GUI2(root)
     root.mainloop()
 
 if __name__ == '__main__':

@@ -15,6 +15,8 @@ class Views2:
         self.usersDict = {} 
         self.delete_list = []
         self.history_dict = {}
+        self.current_doc_uuid = ""
+        self.current_vis_uuid = ""
 
     def set_file_name(self, filename):
         self.file_name = filename
@@ -38,7 +40,7 @@ class Views2:
                     if entry["visitor_country"] not in self.countriesDict:
                         self.countriesDict.update({entry["visitor_country"]: 1})
                     else:
-                        self.countriesDict[entry["visitor_country"]] = self.countriesDict[entry["visitor_country"]] + 1
+                        self.countriesDict[entry["visitor_country"]] = self.countriesDict[entry["visitor_country"]] + 1    
         return self.countriesDict
 
     def bycontinent(self, docUUID):

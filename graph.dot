@@ -1,21 +1,13 @@
 digraph "also likes" {
 	Readers [label=Readers shape=none]
 	Documents [label=Documents shape=none]
-	Readers -> Documents [label="Size: 1.4M"]
-	"72b5" [label="72b5" color=green shape=circle style=filled]
-	d3ca [label=d3ca shape=box]
-	d3ca -> "72b5"
-	"1a0c" [label="1a0c" shape=box]
-	"1a0c" -> "72b5"
+	Readers -> Documents [label="Size: 102K"]
+	adbe [label=adbe color=green shape=circle style=filled]
+	f4ef [label=f4ef shape=box]
+	f4ef -> adbe
 	beef [label=beef color=green shape=box style=filled]
-	beef -> "72b5"
-	"14cf" [label="14cf" shape=circle]
-	"1a0c" [label="1a0c" shape=box]
-	"1a0c" -> "14cf"
-	b92f [label=b92f shape=circle]
-	"1a0c" [label="1a0c" shape=box]
-	"1a0c" -> b92f
-	dd59 [label=dd59 shape=circle]
-	"1a0c" [label="1a0c" shape=box]
-	"1a0c" -> dd59
+	beef -> adbe
+	ecbe [label=ecbe shape=circle]
+	f4ef [label=f4ef shape=box]
+	f4ef -> ecbe
 }
