@@ -1,6 +1,8 @@
+import tkinter as tk
 import sys, getopt
 from Views import Views
-from GUI import GUI
+from GUI2 import GUI2
+from DataGUI import DataGUI
 
 def main(argv):
     user_uuid = ""
@@ -26,27 +28,46 @@ def main(argv):
         elif opt == '-f':
             file_name = arg
 
-    view = Views(file_name)
-
     # run task
     if task_id == "2a":
-        print(view.bycountry(doc_uuid))
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.by_country_plot(doc_uuid)
+        root.mainloop()
     elif task_id == "2b":
-        print(view.bycontinent(doc_uuid))
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.by_continent_plot(doc_uuid)
+        root.mainloop()
     elif task_id == "3a":
-        print(view.byallbrowser())
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.by_browser_plot()
+        root.mainloop()
     elif task_id == "3b":
-        print(view.bybrowser()) # <----------------------------------- returns an empty dict atm. needs fixing
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.by_browser_plot()
+        root.mainloop()
     elif task_id == "4":
-        print(view.readerProfile())
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.reader_profiles()
+        root.mainloop()
     elif task_id == "5d":
-        if not user_uuid:
-            print(view.alsoLikes(doc_uuid, view.sortFunc))
-        else:
-            print(view.alsoLikes(doc_uuid, user_uuid, view.sortFunc))
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.alsoLikes(doc_uuid, user_uuid)
+        root.mainloop()
     elif task_id == "6":
-        gui = GUI()
-    # elif task_id == "7":
+        root = tk.Tk()
+        dataGUI = DataGUI(root, file_name)
+        dataGUI.alsoLikesGraph(doc_uuid, user_uuid)
+        root.mainloop()
+    elif task_id == "7":
+        root = tk.Tk()
+        dataGUI = GUI2(root)
+        root.mainloop()
 
 if __name__ == "__main__":
    main(sys.argv[1:])
