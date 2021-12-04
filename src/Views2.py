@@ -33,24 +33,23 @@ class Views2:
     def bycountry(self, docUUID):
         self.clear_data()
         for entry in self.dataList:
-            for k, v in entry.items():
-                if v == docUUID:
-                    if entry["visitor_country"] not in self.countriesDict:
-                        self.countriesDict.update({entry["visitor_country"]: 1})
-                    else:
-                        self.countriesDict[entry["visitor_country"]] = self.countriesDict[entry["visitor_country"]] + 1
+            # not all entries have the "subject_doc_id key so need to check for it otherwise KeyError exception is thrown"
+            if "subject_doc_id" in entry and entry["subject_doc_id"] == docUUID:
+                if entry["visitor_country"] not in self.countriesDict:
+                    self.countriesDict.update({entry["visitor_country"]: 1})
+                else:
+                    self.countriesDict[entry["visitor_country"]] = self.countriesDict[entry["visitor_country"]] + 1
         return self.countriesDict
 
     def bycontinent(self, docUUID):
         self.clear_data()
         for entry in self.dataList:
-            for k, v in entry.items():
-                if v == docUUID:
-                    continent = pc.country_alpha2_to_continent_code(entry["visitor_country"])
-                    if continent not in self.continentsDict:
-                        self.continentsDict.update({continent: 1})
-                    else:
-                        self.continentsDict[continent] = self.continentsDict[continent] + 1
+            if "subject_doc_id" in entry and entry["subject_doc_id"] == docUUID:
+                continent = pc.country_alpha2_to_continent_code(entry["visitor_country"])
+                if continent not in self.continentsDict:
+                    self.continentsDict.update({continent: 1})
+                else:
+                    self.continentsDict[continent] = self.continentsDict[continent] + 1
         return self.continentsDict
 
     #Needs refactored
@@ -188,6 +187,7 @@ class Views2:
 
 # view = Views2()
 # view.set_file_name("sample_100k_lines.json")
+# print(view.bycontinent("100713205147-2ee05a98f1794324952eea5ca678c026"))
 # print(view.alsoLikes("100806162735-00000000115598650cb8b514246272b5", "00000000deadbeef", view.sortFunc))
 
 

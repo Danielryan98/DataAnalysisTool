@@ -1,4 +1,5 @@
 import tkinter as tk
+import re
 from tkinter import font
 from tkinter.constants import DISABLED
 from matplotlib import use
@@ -118,17 +119,31 @@ class GUI2:
         panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
         panel.place(x=625, y=0)
 
+    def checkDocID(self, doc_id):
+        return re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_id)
+
+    def checkUserID(self, user_id):
+        return re.findall("^([0-9]|[a-z]){16}$", user_id)
+
     def by_country_plot(self):
         # get doc_id from input
         doc_id = self.document_uuid.get()
-        browser_dict = self.views.bycountry(doc_id)
-        self.plot(browser_dict)
+        if (self.checkDocID(doc_id)):
+            browser_dict = self.views.bycountry(doc_id)
+            self.plot(browser_dict)
+        else:
+            self.document_uuid.delete(0, 'end')
+            self.document_uuid.insert(0, "Not a valid document UUID. Please enter another one...")
 
     def by_continent_plot(self):
         # get doc_id from input
         doc_id = self.document_uuid.get()
-        browser_dict = self.views.bycontinent(doc_id)
-        self.plot(browser_dict)
+        if (self.checkDocID(doc_id)):
+            browser_dict = self.views.bycontinent(doc_id)
+            self.plot(browser_dict)
+        else:
+            self.document_uuid.delete(0, 'end')
+            self.document_uuid.insert(0, "Not a valid document UUID. Please enter another one...")
 
     def by_browser_plot(self):
         browser_dict = self.views.bybrowser()
