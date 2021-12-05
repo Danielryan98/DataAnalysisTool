@@ -194,7 +194,7 @@ class GUI2:
                 else:
                     raise ValueError
             except ValueError:
-                self.error_message("oops!", "Invalid document uuid or visitor uuid. Please rectify, and then try again.")
+                self.error_message("oops!", "Invalid document uuid. Please rectify, and then try again.")
 
     def by_continent_plot(self):
         data = self.views.dataList
@@ -210,7 +210,7 @@ class GUI2:
                 else:
                     raise ValueError
             except ValueError:
-                self.error_message("oops!", "Invalid document or user UUID. Please rectify and then try again.")
+                self.error_message("oops!", "Invalid document UUID. Please rectify and then try again.")
 
     def by_browser_plot(self, type):
         if self.check_for_data():
