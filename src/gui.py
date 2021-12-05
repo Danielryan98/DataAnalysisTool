@@ -123,13 +123,18 @@ class GUI:
         global img
         try:
             path = Path("../assets", "logonew.jpg")
+            img = (Image.open(path))
+            img = img.resize((425,100), Image.ANTIALIAS)
+            img = ImageTk.PhotoImage(img)
+            panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
+            panel.place(x=640, y=5)
         except:
-            path = "logonew.jpg"
-        img= (Image.open(path))
-        img = img.resize((425,100), Image.ANTIALIAS)
-        img = ImageTk.PhotoImage(img)
-        panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
-        panel.place(x=640, y=5)
+            path = "assets\logonew.jpg"
+            img = (Image.open(path))
+            img = img.resize((425,100), Image.ANTIALIAS)
+            img = ImageTk.PhotoImage(img)
+            panel = tk.Label(self.master, image=img, height=100, width=425, bd=0)
+            panel.place(x=640, y=5)
 
     def update_doc_history_list(self):
         doc_hist_list = []
