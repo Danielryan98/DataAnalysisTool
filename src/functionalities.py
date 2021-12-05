@@ -22,7 +22,6 @@ class Functionalities:
 
     def set_file_name(self, file_name):
         self.file_name = file_name
-        self.data_list.clear()
         for line in open(self.file_name, 'r'):
             self.data_list.append(json.loads(line))
 
@@ -187,7 +186,4 @@ class Functionalities:
         xs_sort.reverse()
 
         return xs_sort
-    
-
-
 

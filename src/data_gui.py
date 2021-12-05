@@ -38,8 +38,8 @@ class DataGUI:
         browser_dict = self.views.by_continent(doc_id)
         self.plot(browser_dict)
 
-    def by_browser_plot(self):
-        browser_dict = self.views.by_browser()
+    def by_browser_plot(self, type):
+        browser_dict = self.views.by_browser(type)
         self.plot(browser_dict)
 
     def plot(self, browser_dict):

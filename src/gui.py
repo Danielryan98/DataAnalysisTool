@@ -235,7 +235,7 @@ class GUI:
                     file.close()
 
     def check_doc_id(self, doc_id):
-        return re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_id)
+        return re.findall("^([a-z]|[0-9]){12}-(([a-z]|[0-9]){32}|([a-z]|[0-9]){33})$", doc_id)
 
     def check_user_id(self, user_id):
         return re.findall("^([0-9]|[a-z]){16}$", user_id)
@@ -503,9 +503,8 @@ class GUI:
         tk.messagebox.showinfo(title, message)
 
 def main():
-    root = tk.Tk()
-    app = GUI(root)
-    root.mainloop()
+    app = GUI()
+    app.master.mainloop()
 
 if __name__ == '__main__':
     main()
