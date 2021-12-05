@@ -303,110 +303,124 @@ class GUI2:
     def alsoLikes(self):
 
         if self.check_for_data():
+            try:
+                if self.checkDocID(self.document_uuid.get()):
+                    self.add_vis_history(self.visitor_uuid.get())
+                    self.add_doc_history(self.document_uuid.get())
+                    # get doc_id from input
+                    doc_id = self.document_uuid.get()
+                    # get vis_id from input
+                    user_id = self.visitor_uuid.get()
+                    if not user_id:
+                        also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
+                    else:
+                        also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
 
-            self.add_vis_history(self.visitor_uuid.get())
-            self.add_doc_history(self.document_uuid.get())
-            # get doc_id from input
-            doc_id = self.document_uuid.get()
-            # get vis_id from input
-            user_id = self.visitor_uuid.get()
-            if not user_id:
-                also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
-            else:
-                also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
+                    self.clear_widgets()
+                    # the figure that will contain the plot
+                    fig = Figure(figsize = (10, 5),
+                            dpi = 100)    
 
-            self.clear_widgets()
-            # the figure that will contain the plot
-            fig = Figure(figsize = (10, 5),
-                    dpi = 100)    
+                    canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
+                    canvas.draw()
 
-            canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
-            canvas.draw()
+                    # placing the canvas on the Tkinter window
+                    canvas.get_tk_widget().pack()
 
-            # placing the canvas on the Tkinter window
-            canvas.get_tk_widget().pack()
+                    list_of_docs = tk.Text(self.graphFrame, width=100, height=25)
 
-            list_of_docs = tk.Text(self.graphFrame, width=100, height=25)
+                    for count in also_likes[:11]:
+                        list_of_docs.insert(tk.END, str(count[1]) + " : " + str(count[0]) + "\n")
+                    list_of_docs.place(x=100, y=25)
+                else:
+                    raise ValueError
+            except ValueError:
+                self.error_message("oops!", "Invalid document UUID. Please rectify and then try again.")
 
-            for count in also_likes[:11]:
-                list_of_docs.insert(tk.END, str(count[1]) + " : " + str(count[0]) + "\n")
-            list_of_docs.place(x=100, y=25) 
+             
 
     def alsoLikesGraph(self):
 
         if self.check_for_data():
-            # get doc_id from input
-            doc_id = self.document_uuid.get()
-            # get vis_id from input
-            user_id = self.visitor_uuid.get()
-            if not user_id:
-                also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
-            else:
-                also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
-
-            self.clear_widgets()
-            
-            #Format the key data so that it's in format 300k, 1m, 3m etc.
-            data_size = self.format_number(self.views.dataList.__len__())
-
-            #Slice the id's so that we only work with the last 4 characters. 
-            main_user_id = user_id[-4:]
-            main_doc_id = doc_id[-4:]
-
-            #Node Shapes
-            user_shape = 'box'
-            has_read_shape = 'circle'
-
-            # the figure that will contain the plot
-            fig = Figure(figsize = (10, 5),
-                    dpi = 100)
-
-            #New graphviz digraph called also likes
-            dot = gv.Digraph('also likes')
-
-            #Graph key
-            dot.node('Readers', 'Readers', shape='none')
-            dot.node('Documents', 'Documents', shape='none')
-            dot.edge('Readers', 'Documents', label='Size: ' + data_size)
-
-            for count in also_likes[:11]:
-                if count[1][-4:] == main_doc_id:
-                    dot.node(count[1][-4:], count[1][-4:], shape=has_read_shape, color='green', style='filled')
-                else:
-                    dot.node(count[1][-4:], count[1][-4:], shape=has_read_shape)
-                for user in count[2]:
-                    if user[-4:] == main_user_id:
-                        dot.node(user[-4:], user[-4:], shape=user_shape, color='green', style='filled')
-                        dot.edge(user[-4:], count[1][-4:])
+            try:
+                if self.checkDocID(self.document_uuid.get()):
+                    # get doc_id from input
+                    doc_id = self.document_uuid.get()
+                    # get vis_id from input
+                    user_id = self.visitor_uuid.get()
+                    if not user_id:
+                        also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
                     else:
-                        dot.node(user[-4:], user[-4:], shape=user_shape)
-                        dot.edge(user[-4:], count[1][-4:])
+                        also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
 
-            print(dot.source)
+                    self.clear_widgets()
+                    
+                    #Format the key data so that it's in format 300k, 1m, 3m etc.
+                    data_size = self.format_number(self.views.dataList.__len__())
 
-            with open('graph.dot', "w") as dotfile:
-                dotfile.truncate(0)
-                dotfile.write(dot.source)
-                dotfile.close()
+                    #Slice the id's so that we only work with the last 4 characters. 
+                    main_user_id = user_id[-4:]
+                    main_doc_id = doc_id[-4:]
 
-        
-            check_call(['dot','-Tpng','graph.dot','-o','graph.png'])
+                    #Node Shapes
+                    user_shape = 'box'
+                    has_read_shape = 'circle'
 
-            img_arr = mpimg.imread('graph.png')
+                    # the figure that will contain the plot
+                    fig = Figure(figsize = (10, 5),
+                            dpi = 100)
 
-            # adding the subplot
-            plot1 = fig.add_subplot(111)
+                    #New graphviz digraph called also likes
+                    dot = gv.Digraph('also likes')
 
-            # plotting the graph
-            plot1.axis('off')
-            plot1.imshow(img_arr)
+                    #Graph key
+                    dot.node('Readers', 'Readers', shape='none')
+                    dot.node('Documents', 'Documents', shape='none')
+                    dot.edge('Readers', 'Documents', label='Size: ' + data_size)
+
+                    for count in also_likes[:11]:
+                        if count[1][-4:] == main_doc_id:
+                            dot.node(count[1][-4:], count[1][-4:], shape=has_read_shape, color='green', style='filled')
+                        else:
+                            dot.node(count[1][-4:], count[1][-4:], shape=has_read_shape)
+                        for user in count[2]:
+                            if user[-4:] == main_user_id:
+                                dot.node(user[-4:], user[-4:], shape=user_shape, color='green', style='filled')
+                                dot.edge(user[-4:], count[1][-4:])
+                            else:
+                                dot.node(user[-4:], user[-4:], shape=user_shape)
+                                dot.edge(user[-4:], count[1][-4:])
+
+                    print(dot.source)
+
+                    with open('graph.dot', "w") as dotfile:
+                        dotfile.truncate(0)
+                        dotfile.write(dot.source)
+                        dotfile.close()
+
+                
+                    check_call(['dot','-Tpng','graph.dot','-o','graph.png'])
+
+                    img_arr = mpimg.imread('graph.png')
+
+                    # adding the subplot
+                    plot1 = fig.add_subplot(111)
+
+                    # plotting the graph
+                    plot1.axis('off')
+                    plot1.imshow(img_arr)
+                    
+
+                    canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
+                    canvas.draw()
+
+                    # placing the canvas on the Tkinter window
+                    canvas.get_tk_widget().pack()
+                else:
+                    raise ValueError
+            except ValueError:
+                self.error_message("oops!", "Invalid document UUID. Please rectify and then try again.")
             
-
-            canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
-            canvas.draw()
-
-            # placing the canvas on the Tkinter window
-            canvas.get_tk_widget().pack()
 
     def error_message(self, title, message):
         tk.messagebox.showinfo(title, message)
