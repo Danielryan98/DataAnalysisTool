@@ -212,8 +212,4 @@ class DataGUI:
         # placing the canvas on the Tkinter window
         canvas.get_tk_widget().pack()
 
-def main():
-    root = tk.Tk()
-    app = GUI(root)
-    root.mainloop()
 

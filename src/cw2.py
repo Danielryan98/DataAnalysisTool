@@ -1,6 +1,6 @@
 #Library imports
 import tkinter as tk
-import sys, getopt
+import sys, getopt, re
 
 #Class imports
 from gui import GUI
@@ -32,11 +32,13 @@ def main(argv):
 
     # run task
     if task_id == "2a":
+        check_doc_id(doc_uuid)
         root = tk.Tk()
         data_gui = DataGUI(root, file_name)
         data_gui.by_country_plot(doc_uuid)
         root.mainloop()
     elif task_id == "2b":
+        check_doc_id(doc_uuid)
         root = tk.Tk()
         data_gui = DataGUI(root, file_name)
         data_gui.by_continent_plot(doc_uuid)
@@ -57,11 +59,15 @@ def main(argv):
         data_gui.reader_profiles()
         root.mainloop()
     elif task_id == "5d":
+        check_doc_id(doc_uuid)
+        check_user_id(user_uuid)
         root = tk.Tk()
         data_gui = DataGUI(root, file_name)
         data_gui.also_likes(doc_uuid, user_uuid)
         root.mainloop()
     elif task_id == "6":
+        check_doc_id(doc_uuid)
+        check_user_id(user_uuid)
         root = tk.Tk()
         data_gui = DataGUI(root, file_name)
         data_gui.also_likes_graph(doc_uuid, user_uuid)
@@ -70,6 +76,23 @@ def main(argv):
         root = tk.Tk()
         data_gui = GUI(root)
         root.mainloop()
+
+
+def check_doc_id(doc_id):
+    valid = re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_id)
+    if not valid:
+        print("Not a valid document UUID. Please run the program again and enter a valid document UUID")
+        print("Usage:")
+        print("cw2 -u <user_uuid> -d <doc_uuid> -t <task_id> -f <file_name>")
+        sys.exit()
+
+def check_user_id(user_id):
+    valid = re.findall("^([0-9]|[a-z]){16}$", user_id)
+    if not valid:
+        print("Not a valid user UUID. Please run the program again and enter a valid user UUID")
+        print("Usage:")
+        print("cw2 -u <user_uuid> -d <doc_uuid> -t <task_id> -f <file_name>")
+        sys.exit()
 
 if __name__ == "__main__":
    main(sys.argv[1:])

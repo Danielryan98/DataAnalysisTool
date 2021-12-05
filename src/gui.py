@@ -9,6 +9,7 @@ import graphviz as gv
 from subprocess import check_call
 from PIL import ImageTk, Image
 import re
+from pathlib import Path
 
 
 #Class imports
@@ -107,13 +108,20 @@ class GUI:
         self.paint_logo()
 
     def get_file_from_user(self):
-        file = filedialog.askopenfilename(filetype=[("JSON", ".JSON")])
-        if file: #If they choose a file rather than cancelling           
-            self.views.set_file_name(file)
+        # specifying filetype does not work Linux so try catch used.
+        # this means the filetype isn't validated on Linux
+        try:
+            file = filedialog.askopenfilename(filetype=[("JSON", ".json")])
+            if file: #If they choose a file rather than cancelling           
+                self.views.set_file_name(file)
+        except:
+            file = filedialog.askopenfilename()
+            if file: #If they choose a file rather than cancelling           
+                self.views.set_file_name(file)
 
     def paint_logo(self):
         global img
-        path = "assets\logonew.jpg"
+        path = Path("../assets", "logonew.jpg")
         img= (Image.open(path))
         img = img.resize((425,100), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
@@ -122,7 +130,7 @@ class GUI:
 
     def update_doc_history_list(self):
         doc_hist_list = []
-        with open("history\history_doc.txt", "r+") as file:
+        with open(Path("../history", "history_doc.txt"), "r+") as file:
             doc_hist_list = [line.rstrip() for line in file]
         file.close()
         doc_hist_list.reverse()
@@ -131,11 +139,11 @@ class GUI:
     def add_doc_history(self, doc_uuid):
         if doc_uuid:
             lines = []
-            with open("history\history_doc.txt", "r+") as file:
+            with open(Path("../history", "history_doc.txt"), "r+") as file:
                 lines = [line.rstrip() for line in file]
                 file.truncate(0)
                 file.close()
-            with open("history\history_doc.txt", "r+") as file:
+            with open(Path("../history", "history_doc.txt"), "r+") as file:
                 for line in lines:
                     if line == doc_uuid:
                         lines.remove(line)
@@ -146,7 +154,7 @@ class GUI:
         
     def update_vis_history_list(self):
         vis_hist_list = []
-        with open("history\history_vis.txt", "r+") as file:
+        with open(Path("../history", "history_vis.txt"), "r+") as file:
             vis_hist_list = [line.rstrip() for line in file]
         file.close()
         vis_hist_list.reverse()
@@ -155,11 +163,11 @@ class GUI:
     def add_vis_history(self, vis_uuid):
         if vis_uuid:
             lines = []
-            with open("history\history_vis.txt", "r+") as file:
+            with open(Path("../history", "history_vis.txt"), "r+") as file:
                 lines = [line.rstrip() for line in file]
                 file.truncate(0)
                 file.close()
-            with open("history\history_vis.txt", "r+") as file:
+            with open(Path("../history", "history_vis.txt"), "r+") as file:
                 for line in lines:
                     if line == vis_uuid:
                         lines.remove(line)
