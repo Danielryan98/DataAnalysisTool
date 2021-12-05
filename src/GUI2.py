@@ -43,13 +43,13 @@ class GUI2:
         self.visitor_uuid.place(x=150, y=65)
 
         #Toolbar frame to hold toolbar.
-        self.toolbar_frame = tk.Frame(self.master)
-        self.toolbar_frame.config(bg="white")
-        self.toolbar_frame.place(x=535, y=600)
+        self.toolbarFrame = tk.Frame(self.master)
+        self.toolbarFrame.config(bg="white")
+        self.toolbarFrame.place(x=535, y=600)
 
         #Graph frame to hold the graph.
-        self.graph_frame = tk.Frame(self.master)
-        self.graph_frame.place(x=155, y=100)
+        self.graphFrame = tk.Frame(self.master)
+        self.graphFrame.place(x=155, y=100)
 
         #Upload json button.
         self.upload_json_text = tk.StringVar()
@@ -169,11 +169,11 @@ class GUI2:
                     file.write(line+"\n")
                 file.close()
 
-    def check_doc_uuid(self, doc_uuid):
-        return re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_uuid)
+    def check_doc_id(self, doc_id):
+        return re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_id)
 
-    def check_user_uuid(self, user_uuid):
-        return re.findall("^([0-9]|[a-z]){16}$", user_uuid)
+    def check_user_id(self, user_id):
+        return re.findall("^([0-9]|[a-z]){16}$", user_id)
 
     def check_for_data(self):
         data = self.views.data_list
@@ -188,7 +188,7 @@ class GUI2:
         if self.check_for_data():
             doc_id = self.document_uuid.get()
             try:
-                if self.check_doc_uuid(doc_id):
+                if self.check_doc_id(doc_id):
                     browser_dict = self.views.by_country(doc_id)
                     self.plot(browser_dict)
                 else:
@@ -204,7 +204,7 @@ class GUI2:
             # get doc_id from input
             doc_id = self.document_uuid.get()
             try:
-                if self.check_doc_uuid(doc_id):
+                if self.check_doc_id(doc_id):
                     browser_dict = self.views.by_continent(doc_id)
                     self.plot(browser_dict)
                 else:
@@ -244,23 +244,23 @@ class GUI2:
 
         # creating the Tkinter canvas containing the Matplotlib figure,
         # and placing the canvas on the Tkinter window.
-        canvas = FigureCanvasTkAgg(fig, master = self.graph_frame)  
+        canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
         canvas.draw()
         canvas.get_tk_widget().pack()
 
         # creating the Matplotlib toolbar and placing it on the Tkinter window.
-        toolbar = NavigationToolbar2Tk(canvas, self.toolbar_frame)
+        toolbar = NavigationToolbar2Tk(canvas, self.toolbarFrame)
         toolbar.config(bg="white")
         toolbar.update()
         toolbar.pack()
 
     def clear_widgets(self):
         #Reset toolbar frame to allow for new graph toolbar.
-        for widget in self.toolbar_frame.winfo_children():
+        for widget in self.toolbarFrame.winfo_children():
             widget.destroy()
 
         #Reset chart frame to allow for new graph.
-        for widget in self.graph_frame.winfo_children():
+        for widget in self.graphFrame.winfo_children():
             widget.destroy()
 
     def format_number(self, num):
@@ -286,13 +286,13 @@ class GUI2:
             fig = Figure(figsize = (10, 5),
                     dpi = 100)    
 
-            canvas = FigureCanvasTkAgg(fig, master = self.graph_frame)  
+            canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
             canvas.draw()
 
             # placing the canvas on the Tkinter window
             canvas.get_tk_widget().pack()
 
-            list_of_readers = tk.Text(self.graph_frame, width=100, height=25)
+            list_of_readers = tk.Text(self.graphFrame, width=100, height=25)
 
             users_dict = dict(reversed(list(users_dict.items())[:10]))
             for k in users_dict:
@@ -304,7 +304,7 @@ class GUI2:
 
         if self.check_for_data():
             try:
-                if self.check_doc_uuid(self.document_uuid.get()):
+                if self.check_doc_id(self.document_uuid.get()):
                     self.add_vis_history(self.visitor_uuid.get())
                     self.add_doc_history(self.document_uuid.get())
                     # get doc_id from input
@@ -314,20 +314,26 @@ class GUI2:
                     if not user_id:
                         also_likes = self.views.also_likes(doc_id, self.views.sort_func) 
                     else:
-                        also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
+                        try:
+                            if self.check_user_id(user_id):
+                                also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
+                            else:
+                                raise ValueError
+                        except ValueError:
+                            self.error_message("oops!", "Invalid user UUID. Please rectify and then try again.")
 
                     self.clear_widgets()
                     # the figure that will contain the plot
                     fig = Figure(figsize = (10, 5),
                             dpi = 100)    
 
-                    canvas = FigureCanvasTkAgg(fig, master = self.graph_frame)  
+                    canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
                     canvas.draw()
 
                     # placing the canvas on the Tkinter window
                     canvas.get_tk_widget().pack()
 
-                    list_of_docs = tk.Text(self.graph_frame, width=100, height=25)
+                    list_of_docs = tk.Text(self.graphFrame, width=100, height=25)
 
                     for count in also_likes[:11]:
                         list_of_docs.insert(tk.END, str(count[1]) + " : " + str(count[0]) + "\n")
@@ -343,7 +349,7 @@ class GUI2:
 
         if self.check_for_data():
             try:
-                if self.check_doc_uuid(self.document_uuid.get()):
+                if self.check_doc_id(self.document_uuid.get()):
                     # get doc_id from input
                     doc_id = self.document_uuid.get()
                     # get vis_id from input
@@ -351,7 +357,13 @@ class GUI2:
                     if not user_id:
                         also_likes = self.views.also_likes(doc_id, self.views.sort_func) 
                     else:
-                        also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
+                        try:
+                            if self.check_user_id(user_id):
+                                also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
+                            else:
+                                raise ValueError
+                        except ValueError:
+                            self.error_message("oops!", "Invalid user UUID. Please rectify and then try again.")
 
                     self.clear_widgets()
                     
@@ -411,7 +423,7 @@ class GUI2:
                     plot.imshow(img_arr)
                     
 
-                    canvas = FigureCanvasTkAgg(fig, master = self.graph_frame)  
+                    canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
                     canvas.draw()
 
                     # placing the canvas on the Tkinter window
@@ -430,5 +442,5 @@ def main():
     app = GUI2(root)
     root.mainloop()
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
