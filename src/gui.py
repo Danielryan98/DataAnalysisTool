@@ -27,11 +27,11 @@ class GUI:
         self.master.geometry("1100x700")
 
         #Document ID Input Label.
-        self.document_uuid_label = tk.Label(self.master, text="document_uuid", font="Arial", height=2, width=12, bg="white")
+        self.document_uuid_label = tk.Label(self.master, text="document_uuid", font="Arial", height=2, width=12, bg="white", fg="black")
         self.document_uuid_label.place(x=30, y=20)
 
         #Document ID Input Box.
-        self.document_uuid = ttk.Combobox(self.master, width=75, postcommand=lambda:self.update_doc_history_list()) 
+        self.document_uuid = ttk.Combobox(self.master, width=50, postcommand=lambda:self.update_doc_history_list()) 
         self.document_uuid.place(x=150, y=32)
 
         #User ID Input Label.
@@ -39,7 +39,7 @@ class GUI:
         self.visitor_uuid_label.place(x=45, y=53)
 
         #User ID Input Box.
-        self.visitor_uuid = ttk.Combobox(self.master, width=75, postcommand=lambda:self.update_vis_history_list()) 
+        self.visitor_uuid = ttk.Combobox(self.master, width=50, postcommand=lambda:self.update_vis_history_list()) 
         self.visitor_uuid.place(x=150, y=65)
 
         #Toolbar frame to hold toolbar.
@@ -121,7 +121,10 @@ class GUI:
 
     def paint_logo(self):
         global img
-        path = Path("../assets", "logonew.jpg")
+        try:
+            path = Path("../assets", "logonew.jpg")
+        except:
+            path = "logonew.jpg"
         img= (Image.open(path))
         img = img.resize((425,100), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
@@ -130,7 +133,11 @@ class GUI:
 
     def update_doc_history_list(self):
         doc_hist_list = []
-        with open(Path("../history", "history_doc.txt"), "r+") as file:
+        try:
+            path = Path("../history", "history_doc.txt")
+        except:
+            path = "history_doc.txt"
+        with open(path, "r+") as file:
             doc_hist_list = [line.rstrip() for line in file]
         file.close()
         doc_hist_list.reverse()
@@ -139,11 +146,15 @@ class GUI:
     def add_doc_history(self, doc_uuid):
         if doc_uuid:
             lines = []
-            with open(Path("../history", "history_doc.txt"), "r+") as file:
+            try:
+                path = Path("../history", "history_doc.txt")
+            except:
+                path = "history_doc.txt"
+            with open(path, "r+") as file:
                 lines = [line.rstrip() for line in file]
                 file.truncate(0)
                 file.close()
-            with open(Path("../history", "history_doc.txt"), "r+") as file:
+            with open(path, "r+") as file:
                 for line in lines:
                     if line == doc_uuid:
                         lines.remove(line)
@@ -154,7 +165,11 @@ class GUI:
         
     def update_vis_history_list(self):
         vis_hist_list = []
-        with open(Path("../history", "history_vis.txt"), "r+") as file:
+        try:
+            path = Path("../history", "history_vis.txt")
+        except:
+            path = "history_vis.txt"
+        with open(path, "r+") as file:
             vis_hist_list = [line.rstrip() for line in file]
         file.close()
         vis_hist_list.reverse()
@@ -163,11 +178,15 @@ class GUI:
     def add_vis_history(self, vis_uuid):
         if vis_uuid:
             lines = []
-            with open(Path("../history", "history_vis.txt"), "r+") as file:
+            try:
+                path = Path("../history", "history_vis.txt")
+            except:
+                path = "history_vis.txt"
+            with open(path, "r+") as file:
                 lines = [line.rstrip() for line in file]
                 file.truncate(0)
                 file.close()
-            with open(Path("../history", "history_vis.txt"), "r+") as file:
+            with open(path, "r+") as file:
                 for line in lines:
                     if line == vis_uuid:
                         lines.remove(line)
