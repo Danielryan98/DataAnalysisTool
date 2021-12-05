@@ -33,15 +33,15 @@ class DataGUI:
 
 
     def by_country_plot(self, doc_id):
-        browser_dict = self.views.bycountry(doc_id)
+        browser_dict = self.views.by_country(doc_id)
         self.plot(browser_dict)    
 
     def by_continent_plot(self, doc_id):
-        browser_dict = self.views.bycontinent(doc_id)
+        browser_dict = self.views.by_continent(doc_id)
         self.plot(browser_dict)
 
     def by_browser_plot(self):
-        browser_dict = self.views.bybrowser()
+        browser_dict = self.views.by_browser()
         self.plot(browser_dict)
 
     def plot(self, browser_dict):
@@ -100,7 +100,7 @@ class DataGUI:
 
     def reader_profiles(self):
 
-        users_dict = self.views.userMinutes()
+        users_dict = self.views.user_minutes()
 
         self.clear_widgets()
 
@@ -123,9 +123,9 @@ class DataGUI:
     
     def alsoLikes(self, doc_id, user_id):
         if not user_id:
-            also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
+            also_likes = self.views.also_likes(doc_id, self.views.sort_func) 
         else:
-            also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
+            also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
 
         self.clear_widgets()
         # the figure that will contain the plot
@@ -146,14 +146,14 @@ class DataGUI:
 
     def alsoLikesGraph(self, doc_id, user_id):
         if not user_id:
-            also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
+            also_likes = self.views.also_likes(doc_id, self.views.sort_func) 
         else:
-            also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
+            also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
 
         self.clear_widgets()
         
         #Format the key data so that it's in format 300k, 1m, 3m etc.
-        data_size = self.format_number(self.views.dataList.__len__())
+        data_size = self.format_number(self.views.data_list.__len__())
 
         #Slice the id's so that we only work with the last 4 characters. 
         main_user_id = user_id[-4:]

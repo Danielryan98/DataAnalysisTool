@@ -89,19 +89,19 @@ class GUI2:
 
         #Also likes button.
         self.also_likes_text = tk.StringVar()
-        self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikes())
+        self.also_likes_btn = tk.Button(self.master, textvariable=self.also_likes_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.also_likes())
         self.also_likes_text.set("Also Likes")
         self.also_likes_btn.place(x=45, y=485)
 
         #Also likes graph button.
         self.also_likes_graph_text = tk.StringVar()
-        self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
+        self.also_likes_graph_btn = tk.Button(self.master, textvariable=self.also_likes_graph_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.also_likes_graphs())
         self.also_likes_graph_text.set("Also Likes Graph")
         self.also_likes_graph_btn.place(x=45, y=545)
 
         #how_to button.
         self.how_to_text = tk.StringVar()
-        self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.alsoLikesGraph())
+        self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.also_likes_graphs())
         self.how_to_text.set("How-to")
         self.how_to_btn.place(x=45, y=605)
 
@@ -129,8 +129,8 @@ class GUI2:
         doc_hist_list.reverse()
         self.document_uuid['values'] = doc_hist_list
 
-    def add_doc_history(self, docUUID):
-        if docUUID:
+    def add_doc_history(self, doc_uuid):
+        if doc_uuid:
             lines = []
             with open("doc_history.txt", "r+") as file:
                 lines = [line.rstrip() for line in file]
@@ -138,9 +138,9 @@ class GUI2:
                 file.close()
             with open("doc_history.txt", "r+") as file:
                 for line in lines:
-                    if line == docUUID:
+                    if line == doc_uuid:
                         lines.remove(line)
-                lines.append(docUUID)
+                lines.append(doc_uuid)
                 for line in lines:
                     file.write(line+"\n")
                 file.close()
@@ -153,8 +153,8 @@ class GUI2:
         vis_hist_list.reverse()
         self.visitor_uuid['values'] = vis_hist_list
 
-    def add_vis_history(self, visUUID):
-        if visUUID:
+    def add_vis_history(self, vis_uuid):
+        if vis_uuid:
             lines = []
             with open("vis_history.txt", "r+") as file:
                 lines = [line.rstrip() for line in file]
@@ -162,21 +162,21 @@ class GUI2:
                 file.close()
             with open("vis_history.txt", "r+") as file:
                 for line in lines:
-                    if line == visUUID:
+                    if line == vis_uuid:
                         lines.remove(line)
-                lines.append(visUUID)
+                lines.append(vis_uuid)
                 for line in lines:
                     file.write(line+"\n")
                 file.close()
 
-    def checkDocID(self, doc_id):
+    def check_doc_id(self, doc_id):
         return re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_id)
 
-    def checkUserID(self, user_id):
+    def check_user_id(self, user_id):
         return re.findall("^([0-9]|[a-z]){16}$", user_id)
 
     def check_for_data(self):
-        data = self.views.dataList
+        data = self.views.data_list
         if not data:
             self.error_message("oops!", "Please provide a valid JSON file, and then try again.")
         else:
@@ -188,8 +188,8 @@ class GUI2:
         if self.check_for_data():
             doc_id = self.document_uuid.get()
             try:
-                if self.checkDocID(doc_id):
-                    browser_dict = self.views.bycountry(doc_id)
+                if self.check_doc_id(doc_id):
+                    browser_dict = self.views.by_country(doc_id)
                     self.plot(browser_dict)
                 else:
                     raise ValueError
@@ -197,15 +197,15 @@ class GUI2:
                 self.error_message("oops!", "Invalid document uuid. Please rectify, and then try again.")
 
     def by_continent_plot(self):
-        data = self.views.dataList
+        data = self.views.data_list
         if not data:
             self.error_message("oops!", "Please provide a valid JSON file, and then try again.")
         else:
             # get doc_id from input
             doc_id = self.document_uuid.get()
             try:
-                if self.checkDocID(doc_id):
-                    browser_dict = self.views.bycontinent(doc_id)
+                if self.check_doc_id(doc_id):
+                    browser_dict = self.views.by_continent(doc_id)
                     self.plot(browser_dict)
                 else:
                     raise ValueError
@@ -214,7 +214,7 @@ class GUI2:
 
     def by_browser_plot(self, type):
         if self.check_for_data():
-            browser_dict = self.views.bybrowser(type)
+            browser_dict = self.views.by_browser(type)
             self.plot(browser_dict)
 
     def plot(self, browser_dict):
@@ -238,9 +238,9 @@ class GUI2:
                 dpi = 100)
 
         # Create the subplot. Set x & y and bar thickness. Plot the graph.
-        plot1 = fig.add_subplot(111)
-        plot1.bar(x_items, y_items, .5)
-        plot1.plot()
+        plot = fig.add_subplot(111)
+        plot.bar(x_items, y_items, .5)
+        plot.plot()
 
         # creating the Tkinter canvas containing the Matplotlib figure,
         # and placing the canvas on the Tkinter window.
@@ -275,7 +275,7 @@ class GUI2:
 
         if self.check_for_data():
 
-            users_dict = self.views.userMinutes()
+            users_dict = self.views.user_minutes()
 
             self.add_vis_history(self.visitor_uuid.get())
             self.add_doc_history(self.document_uuid.get())
@@ -300,11 +300,11 @@ class GUI2:
             list_of_readers.place(x=100, y=25)   
  
 
-    def alsoLikes(self):
+    def also_likes(self):
 
         if self.check_for_data():
             try:
-                if self.checkDocID(self.document_uuid.get()):
+                if self.check_doc_id(self.document_uuid.get()):
                     self.add_vis_history(self.visitor_uuid.get())
                     self.add_doc_history(self.document_uuid.get())
                     # get doc_id from input
@@ -312,9 +312,9 @@ class GUI2:
                     # get vis_id from input
                     user_id = self.visitor_uuid.get()
                     if not user_id:
-                        also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
+                        also_likes = self.views.also_likes(doc_id, self.views.sort_func) 
                     else:
-                        also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
+                        also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
 
                     self.clear_widgets()
                     # the figure that will contain the plot
@@ -339,24 +339,24 @@ class GUI2:
 
              
 
-    def alsoLikesGraph(self):
+    def also_likes_graphs(self):
 
         if self.check_for_data():
             try:
-                if self.checkDocID(self.document_uuid.get()):
+                if self.check_doc_id(self.document_uuid.get()):
                     # get doc_id from input
                     doc_id = self.document_uuid.get()
                     # get vis_id from input
                     user_id = self.visitor_uuid.get()
                     if not user_id:
-                        also_likes = self.views.alsoLikes(doc_id, self.views.sortFunc) 
+                        also_likes = self.views.also_likes(doc_id, self.views.sort_func) 
                     else:
-                        also_likes = self.views.alsoLikes(doc_id, user_id, self.views.sortFunc) 
+                        also_likes = self.views.also_likes(doc_id, user_id, self.views.sort_func) 
 
                     self.clear_widgets()
                     
                     #Format the key data so that it's in format 300k, 1m, 3m etc.
-                    data_size = self.format_number(self.views.dataList.__len__())
+                    data_size = self.format_number(self.views.data_list.__len__())
 
                     #Slice the id's so that we only work with the last 4 characters. 
                     main_user_id = user_id[-4:]
@@ -393,10 +393,10 @@ class GUI2:
 
                     print(dot.source)
 
-                    with open('graph.dot', "w") as dotfile:
-                        dotfile.truncate(0)
-                        dotfile.write(dot.source)
-                        dotfile.close()
+                    with open('graph.dot', "w") as dot_file:
+                        dot_file.truncate(0)
+                        dot_file.write(dot.source)
+                        dot_file.close()
 
                 
                     check_call(['dot','-Tpng','graph.dot','-o','graph.png'])
@@ -404,11 +404,11 @@ class GUI2:
                     img_arr = mpimg.imread('graph.png')
 
                     # adding the subplot
-                    plot1 = fig.add_subplot(111)
+                    plot = fig.add_subplot(111)
 
                     # plotting the graph
-                    plot1.axis('off')
-                    plot1.imshow(img_arr)
+                    plot.axis('off')
+                    plot.imshow(img_arr)
                     
 
                     canvas = FigureCanvasTkAgg(fig, master = self.graphFrame)  
