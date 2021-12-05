@@ -16,11 +16,11 @@ from pathlib import Path
 from functionalities import Functionalities
 
 class GUI:
-    def __init__(self, master):
+    def __init__(self):
 
         self.views = Functionalities()
 
-        self.master = master
+        self.master = tk.Tk()
         self.master.resizable('false', 'false')
         self.master.config(bg="white")
         self.button_theme = '#1f77b4'

@@ -1,5 +1,4 @@
 #Library imports
-import tkinter as tk
 import sys, getopt, re
 
 #Class imports
@@ -35,49 +34,41 @@ def main(argv):
     # run task
     if task_id == "2a":
         check_doc_id(doc_uuid)
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.by_country_plot(doc_uuid)
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "2b":
         check_doc_id(doc_uuid)
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.by_continent_plot(doc_uuid)
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "3a":
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.by_browser_plot()
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "3b":
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.by_browser_plot()
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "4":
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.reader_profiles()
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "5d":
         check_doc_id(doc_uuid)
         check_user_id(user_uuid)
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.also_likes(doc_uuid, user_uuid)
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "6":
         check_doc_id(doc_uuid)
         check_user_id(user_uuid)
-        root = tk.Tk()
-        data_gui = DataGUI(root, file_name)
+        data_gui = DataGUI(file_name)
         data_gui.also_likes_graph(doc_uuid, user_uuid)
-        root.mainloop()
+        data_gui.master.mainloop()
     elif task_id == "7":
-        root = tk.Tk()
-        data_gui = GUI(root)
-        root.mainloop()
+        gui = GUI()
+        gui.master.mainloop()
 
 
 def check_doc_id(doc_id):

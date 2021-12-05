@@ -10,9 +10,9 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from functionalities import Functionalities
 
 class DataGUI:
-    def __init__(self, master, file_name):
+    def __init__(self, file_name):
 
-        self.master = master
+        self.master = tk.Tk()
         self.views = Functionalities()
         self.views.set_file_name(file_name)
 
