@@ -175,25 +175,42 @@ class GUI2:
     def checkUserID(self, user_id):
         return re.findall("^([0-9]|[a-z]){16}$", user_id)
 
+    def check_for_data(self):
+        data = self.views.dataList
+        if not data:
+            self.error_message("oops!", "Please provide a valid JSON file, and then try again.")
+        else:
+            return True
+
     def by_country_plot(self):
         # get doc_id from input
-        doc_id = self.document_uuid.get()
-        if (self.checkDocID(doc_id)):
-            browser_dict = self.views.bycountry(doc_id)
-            self.plot(browser_dict)
-        else:
-            self.document_uuid.delete(0, 'end')
-            self.document_uuid.insert(0, "Not a valid document UUID. Please enter another one...")
+
+        if self.check_for_data():
+            doc_id = self.document_uuid.get()
+            try:
+                if self.checkDocID(doc_id):
+                    browser_dict = self.views.bycountry(doc_id)
+                    self.plot(browser_dict)
+                else:
+                    raise ValueError
+            except ValueError:
+                self.error_message("oops!", "Invalid document uuid or visitor uuid. Please rectify, and then try again.")
 
     def by_continent_plot(self):
-        # get doc_id from input
-        doc_id = self.document_uuid.get()
-        if (self.checkDocID(doc_id)):
-            browser_dict = self.views.bycontinent(doc_id)
-            self.plot(browser_dict)
+        data = self.views.dataList
+        if not data:
+            self.error_message("oops!", "Please provide a valid JSON file, and then try again.")
         else:
-            self.document_uuid.delete(0, 'end')
-            self.document_uuid.insert(0, "Not a valid document UUID. Please enter another one...")
+            # get doc_id from input
+            doc_id = self.document_uuid.get()
+            try:
+                if self.checkDocID(doc_id):
+                    browser_dict = self.views.bycontinent(doc_id)
+                    self.plot(browser_dict)
+                else:
+                    raise ValueError
+            except ValueError:
+                self.error_message("oops!", "Invalid document or user UUID. Please rectify and then try again.")
 
     def by_browser_plot(self, type):
         browser_dict = self.views.bybrowser(type)
@@ -383,6 +400,9 @@ class GUI2:
 
         # placing the canvas on the Tkinter window
         canvas.get_tk_widget().pack()
+
+    def error_message(self, title, message):
+        tk.messagebox.showinfo(title, message)
 
 def main():
     root = tk.Tk()
