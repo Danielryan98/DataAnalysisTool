@@ -13,8 +13,10 @@ def main(argv):
     file_name = ""
     try:
         # string of option letter that the program recognises. Options that require an argument are followed by a semicolon
-        opts, args = getopt.getopt(argv, "hu:d:t:f:")
+        opts, args = getopt.getopt(sys.argv[1:], "hu:d:t:f:")
     except getopt.GetoptError:
+        print("Usage:")
+        print("")
         print("cw2 -u <user_uuid> -d <doc_uuid> -t <task_id> -f <file_name>")
         sys.exit(2)
     for opt, arg in opts:
