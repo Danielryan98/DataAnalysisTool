@@ -140,65 +140,99 @@ class GUI:
         doc_hist_list = []
         try:
             path = Path("../history", "history_doc.txt")
+            with open(path, "r+") as file:
+                doc_hist_list = [line.rstrip() for line in file]
+            file.close()
+            doc_hist_list.reverse()
+            self.document_uuid['values'] = doc_hist_list
         except:
-            path = "history_doc.txt"
-        with open(path, "r+") as file:
-            doc_hist_list = [line.rstrip() for line in file]
-        file.close()
-        doc_hist_list.reverse()
-        self.document_uuid['values'] = doc_hist_list
+            path = "history\history_doc.txt"
+            with open(path, "r+") as file:
+                doc_hist_list = [line.rstrip() for line in file]
+            file.close()
+            doc_hist_list.reverse()
+            self.document_uuid['values'] = doc_hist_list
 
     def add_doc_history(self, doc_uuid):
         if doc_uuid:
             lines = []
             try:
                 path = Path("../history", "history_doc.txt")
+                with open(path, "r+") as file:
+                    lines = [line.rstrip() for line in file]
+                    file.truncate(0)
+                    file.close()
+                with open(path, "r+") as file:
+                    for line in lines:
+                        if line == doc_uuid:
+                            lines.remove(line)
+                    lines.append(doc_uuid)
+                    for line in lines:
+                        file.write(line+"\n")
+                    file.close()
             except:
-                path = "history_doc.txt"
-            with open(path, "r+") as file:
-                lines = [line.rstrip() for line in file]
-                file.truncate(0)
-                file.close()
-            with open(path, "r+") as file:
-                for line in lines:
-                    if line == doc_uuid:
-                        lines.remove(line)
-                lines.append(doc_uuid)
-                for line in lines:
-                    file.write(line+"\n")
-                file.close()
+                path = "history\history_doc.txt"
+                with open(path, "r+") as file:
+                    lines = [line.rstrip() for line in file]
+                    file.truncate(0)
+                    file.close()
+                with open(path, "r+") as file:
+                    for line in lines:
+                        if line == doc_uuid:
+                            lines.remove(line)
+                    lines.append(doc_uuid)
+                    for line in lines:
+                        file.write(line+"\n")
+                    file.close()
         
     def update_vis_history_list(self):
         vis_hist_list = []
         try:
             path = Path("../history", "history_vis.txt")
+            with open(path, "r+") as file:
+                vis_hist_list = [line.rstrip() for line in file]
+                file.close()
+                vis_hist_list.reverse()
+                self.visitor_uuid['values'] = vis_hist_list
         except:
-            path = "history_vis.txt"
-        with open(path, "r+") as file:
-            vis_hist_list = [line.rstrip() for line in file]
-        file.close()
-        vis_hist_list.reverse()
-        self.visitor_uuid['values'] = vis_hist_list
+            path = "history\history_vis.txt"
+            with open(path, "r+") as file:
+                vis_hist_list = [line.rstrip() for line in file]
+                file.close()
+                vis_hist_list.reverse()
+                self.visitor_uuid['values'] = vis_hist_list
 
     def add_vis_history(self, vis_uuid):
         if vis_uuid:
             lines = []
             try:
                 path = Path("../history", "history_vis.txt")
+                with open(path, "r+") as file:
+                    lines = [line.rstrip() for line in file]
+                    file.truncate(0)
+                    file.close()
+                with open(path, "r+") as file:
+                    for line in lines:
+                        if line == vis_uuid:
+                            lines.remove(line)
+                    lines.append(vis_uuid)
+                    for line in lines:
+                        file.write(line+"\n")
+                    file.close()
             except:
-                path = "history_vis.txt"
-            with open(path, "r+") as file:
-                lines = [line.rstrip() for line in file]
-                file.truncate(0)
-                file.close()
-            with open(path, "r+") as file:
-                for line in lines:
-                    if line == vis_uuid:
-                        lines.remove(line)
-                lines.append(vis_uuid)
-                for line in lines:
-                    file.write(line+"\n")
-                file.close()
+                path = "history\history_vis.txt"
+                with open(path, "r+") as file:
+                    lines = [line.rstrip() for line in file]
+                    file.truncate(0)
+                    file.close()
+                with open(path, "r+") as file:
+                    for line in lines:
+                        if line == vis_uuid:
+                            lines.remove(line)
+                    lines.append(vis_uuid)
+                    for line in lines:
+                        file.write(line+"\n")
+                    file.close()
 
     def check_doc_id(self, doc_id):
         return re.findall("^([0-9]{12})-([a-z]|[0-9]){32}$", doc_id)
