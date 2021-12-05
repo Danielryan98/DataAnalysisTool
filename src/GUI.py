@@ -12,12 +12,12 @@ import re
 
 
 #Class imports
-from functionalities import Views
+from functionalities import Functionalities
 
 class GUI:
     def __init__(self, master):
 
-        self.views = Views()
+        self.views = Functionalities()
 
         self.master = master
         self.master.resizable('false', 'false')

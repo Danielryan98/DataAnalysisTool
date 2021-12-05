@@ -7,13 +7,13 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 #Class imports
-from functionalities import Views
+from functionalities import Functionalities
 
 class DataGUI:
     def __init__(self, master, file_name):
 
         self.master = master
-        self.views = Views()
+        self.views = Functionalities()
         self.views.set_file_name(file_name)
 
         self.master.config(bg="white")
