@@ -37,18 +37,12 @@ class Functionalities:
     def by_country(self, doc_uuid):
         self.clear_data()
         for entry in self.data_list:
-            for k, v in entry.items():
-                if v == doc_uuid:
-                    if entry["visitor_country"] not in self.countries_dict:
-                        self.countries_dict.update({entry["visitor_country"]: 1})
-                    else:
-                        self.countries_dict[entry["visitor_country"]] = self.countries_dict[entry["visitor_country"]] + 1    
             # not all entries have the "subject_doc_id key so need to check for it otherwise KeyError exception is thrown"
             if "subject_doc_id" in entry and entry["subject_doc_id"] == doc_uuid:
                 if entry["visitor_country"] not in self.countries_dict:
                     self.countries_dict.update({entry["visitor_country"]: 1})
                 else:
-                    self.countries_dict[entry["visitor_country"]] = self.countries_dict[entry["visitor_country"]] + 1
+                    self.countries_dict[entry["visitor_country"]] = self.countries_dict[entry["visitor_country"]] + 1 
         return self.countries_dict
 
     def by_continent(self, doc_uuid):
