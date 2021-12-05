@@ -152,7 +152,6 @@ class Views2:
                 for doc_uuid in also_likes_dict[x]:
                     if doc_uuid == k[1]:
                         user_uuids.append(x)
-            k[1] = k[1]
             k.append(user_uuids)
 
         # sort() method sorts on first element of nested list 
@@ -187,8 +186,6 @@ class Views2:
                     if doc_uuid == k[1]:
                         user_uuids.append(x)
             k.append(user_uuids)
-            # get the last 4 hex-digits of the document UUID
-            k[1] = k[1]
 
         # sort on a tuple sorts on the first element
         xs_sort.sort()
