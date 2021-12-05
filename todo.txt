@@ -1,3 +1,0 @@
-Test for multiple button clicks
-Test for invalid doc uuid
-Test for invalid user uuid

@@ -1,5 +1,0 @@
-digraph "also likes" {
-	Readers [label=Readers shape=none]
-	Documents [label=Documents shape=none]
-	Readers -> Documents [label="Size: 102K"]
-}
