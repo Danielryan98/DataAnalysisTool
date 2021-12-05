@@ -4,7 +4,7 @@ import pycountry_convert as pc
 import httpagentparser as hp
 from multipledispatch import dispatch
 
-class Views:
+class Functionalities:
     def __init__(self):
         self.data_list = []
         self.file_name = ""
