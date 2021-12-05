@@ -107,7 +107,7 @@ class GUI:
         self.paint_logo()
 
     def get_file_from_user(self):
-        file = filedialog.askopenfilename()
+        file = filedialog.askopenfilename(filetype=[("JSON", ".JSON")])
         if file: #If they choose a file rather than cancelling           
             self.views.set_file_name(file)
 
