@@ -4,7 +4,7 @@ import sys, getopt
 
 #Class imports
 from gui import GUI
-from cmd_gui import DataGUI
+from data_gui import DataGUI
 
 def main(argv):
     user_uuid = ""
