@@ -121,6 +121,9 @@ class GUI:
             if file: #If they choose a file rather than cancelling           
                 self.views.set_file_name(file)   
 
+                
+
+
     def paint_logo(self):
         global img
         try:
@@ -291,6 +294,8 @@ class GUI:
         self.add_doc_history(self.document_uuid.get())
 
         self.clear_widgets()
+
+
 
         x_items = []
         y_items = []
@@ -538,7 +543,7 @@ class GUI:
             how_to = doc.pdf_view(self.graph_frame, pdf_location=path, width=90, height=50)
  
             how_to.place(x=100, y=25) 
-            
+
     def error_message(self, title, message):
         tk.messagebox.showinfo(title, message)
 

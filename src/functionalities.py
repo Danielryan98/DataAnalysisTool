@@ -201,4 +201,3 @@ class Functionalities:
 # print(views.by_browser_short(views.by_browser_long()))
 # print(views.user_minutes())
 # print(views.also_likes("aaaaaaaaaaaa-00000000df1ad06a86c40000000feadbe", "00000000deadbeef", views.sort_func))
-
