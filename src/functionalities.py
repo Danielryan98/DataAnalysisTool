@@ -23,9 +23,6 @@ class Functionalities:
         print("Data loaded in " + str(stop-start) + "s with "+ str(len(self.data_list)) + " lines.")
 
 
-
-        print("Data loaded in " + str(stop-start) + "s with "+ str(len(self.data_list)) + " lines.")
-
     # uses the subject_doc_id to uniquely specify a document
     def by_country(self, doc_uuid):
         # self.clear_data()
@@ -122,8 +119,7 @@ class Functionalities:
         # so make a set to get rid of duplicates
         doc_uuids = []
         for entry in self.data_list:
-            if entry["event_type"] == "read" and entry["visitor_uuid"] == vis_uuid:
-                if entry["subject_doc_id"] not in doc_uuids:
+            if entry["event_type"] == "read" and entry["visitor_uuid"] == vis_uuid and entry["subject_doc_id"] not in doc_uuids:
                     doc_uuids.append(entry["subject_doc_id"])
         return doc_uuids
 
@@ -145,7 +141,7 @@ class Functionalities:
         xs = set([])
         for k in also_likes_dict.keys():
             # gets the list of document UUIDs associated with a key k and adds them to the set xs
-            xs = xs | set(also_likes_dict[delete_listk])
+            xs = xs | set(also_likes_dict[k])
         xs_sort = [[sort_func(x,also_likes_dict), x] for x in xs]
 
         # appends a list of visitors who have read the document

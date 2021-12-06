@@ -11,6 +11,7 @@ from PIL import ImageTk, Image
 import re
 from pathlib import Path
 import matplotlib
+from tkPDFViewer import tkPDFViewer as pdf
 
 
 #Class imports
@@ -102,7 +103,7 @@ class GUI:
 
         #how_to button.
         self.how_to_text = tk.StringVar()
-        self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.also_likes_graphs())
+        self.how_to_btn = tk.Button(self.master, textvariable=self.how_to_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.display_tutorial())
         self.how_to_text.set("How-to")
         self.how_to_btn.place(x=45, y=605)
 
@@ -118,10 +119,7 @@ class GUI:
         except:
             file = filedialog.askopenfilename()
             if file: #If they choose a file rather than cancelling           
-                self.views.set_file_name(file)
-
-                
-
+                self.views.set_file_name(file)   
 
     def paint_logo(self):
         global img
@@ -294,8 +292,6 @@ class GUI:
 
         self.clear_widgets()
 
-
-
         x_items = []
         y_items = []
 
@@ -413,9 +409,7 @@ class GUI:
                     raise ValueError
             except ValueError:
                 self.error_message("oops!", "Invalid document UUID. Please rectify and then try again.")
-
-             
-
+        
     def also_likes_graphs(self):
 
         if self.check_for_data():
@@ -505,6 +499,46 @@ class GUI:
                 self.error_message("oops!", "Invalid document UUID. Please rectify and then try again.")
             
 
+    def display_tutorial(self):
+        try:
+            self.clear_widgets()
+
+            # the figure that will contain the plot
+            fig = Figure(figsize = (10, 5),
+                    dpi = 100)    
+
+            canvas = FigureCanvasTkAgg(fig, master = self.graph_frame)  
+            canvas.draw()
+
+            # placing the canvas on the Tkinter window
+            canvas.get_tk_widget().pack()
+
+            path = "tutorial\howto_guide.pdf"
+
+            doc = pdf.ShowPdf()
+            how_to = doc.pdf_view(self.graph_frame, pdf_location=path, width=90, height=50)
+ 
+            how_to.place(x=100, y=25)    
+        except:
+            self.clear_widgets()
+
+            # the figure that will contain the plot
+            fig = Figure(figsize = (10, 5),
+                    dpi = 100)    
+
+            canvas = FigureCanvasTkAgg(fig, master = self.graph_frame)  
+            canvas.draw()
+
+            # placing the canvas on the Tkinter window
+            canvas.get_tk_widget().pack()
+
+            path = Path("../tutorial", "howto_guide.pdf")
+
+            doc = pdf.ShowPdf()
+            how_to = doc.pdf_view(self.graph_frame, pdf_location=path, width=90, height=50)
+ 
+            how_to.place(x=100, y=25) 
+            
     def error_message(self, title, message):
         tk.messagebox.showinfo(title, message)
 
