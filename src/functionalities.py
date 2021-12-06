@@ -1,5 +1,5 @@
 #Library imports
-import json
+import json, timeit
 import pycountry_convert as pc
 import httpagentparser as hp
 from multipledispatch import dispatch
@@ -11,9 +11,16 @@ class Functionalities:
 
     def set_file_name(self, file_name):
         self.file_name = file_name
+        # clear the list because it could already be populated
+        self.data_list.clear()
+
+        start = timeit.default_timer()
         print("Loading data file...")
         for line in open(self.file_name, 'r'):
             self.data_list.append(json.loads(line))
+        stop = timeit.default_timer()
+
+        print("Data loaded in " + str(stop-start) + "s with "+ str(len(self.data_list)) + " lines.")
 
     # uses the subject_doc_id to uniquely specify a document
     def by_country(self, doc_uuid):
@@ -27,6 +34,7 @@ class Functionalities:
                     countries_dict.update({entry["visitor_country"]: 1})
                 else:
                     countries_dict[entry["visitor_country"]] = countries_dict[entry["visitor_country"]] + 1 
+        print(countries_dict)
         return countries_dict
 
     def by_continent(self, doc_uuid):
@@ -39,6 +47,7 @@ class Functionalities:
                     continents_dict.update({continent: 1})
                 else:
                     continents_dict[continent] = continents_dict[continent] + 1
+        print(continents_dict)
         return continents_dict
 
     #Needs refactored
@@ -52,6 +61,7 @@ class Functionalities:
                     browser_dict_long.update({entry["visitor_useragent"]: 1})
                 else:
                     browser_dict_long[entry["visitor_useragent"]] = browser_dict_long[entry["visitor_useragent"]] + 1
+        print(browser_dict_long)
         return browser_dict_long
 
     def by_browser_short(self, browser_dict_long):
@@ -75,6 +85,7 @@ class Functionalities:
                 delete_list.append(browser)
         for browser in delete_list:
             del browser_dict_short[browser]
+        print(browser_dict_short)
         return browser_dict_short
 
     def user_minutes(self):
@@ -90,6 +101,7 @@ class Functionalities:
                     users_dict[entry["visitor_uuid"]] += entry["event_readtime"]
         # then sort the dict by time value in descending order
         users_dict = (dict(sorted(users_dict.items(), key=lambda item: item[1], reverse=True)))
+        print(users_dict)
         return users_dict
 
     def readers_of_doc(self, doc_uuid):
@@ -143,7 +155,7 @@ class Functionalities:
         xs_sort.sort()
         # reverse the list to get most read document first
         xs_sort.reverse()
-
+        print(xs_sort)
         return xs_sort
 
     @dispatch(object, object, object)
@@ -175,7 +187,7 @@ class Functionalities:
         # sort on a tuple sorts on the first element
         xs_sort.sort()
         xs_sort.reverse()
-
+        print(xs_sort)
         return xs_sort
     
 

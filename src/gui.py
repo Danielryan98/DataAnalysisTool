@@ -294,8 +294,6 @@ class GUI:
 
         self.clear_widgets()
 
-        print(browser_dict.items())
-
         x_items = []
         y_items = []
 
