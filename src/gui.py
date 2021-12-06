@@ -72,13 +72,13 @@ class GUI:
 
         #By browser full button.
         self.by_browser_full_text = tk.StringVar()
-        self.by_browser_full_btn = tk.Button(self.master, textvariable=self.by_browser_full_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot(self.views.BROWSER_FULL))
+        self.by_browser_full_btn = tk.Button(self.master, textvariable=self.by_browser_full_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot("FULL"))
         self.by_browser_full_text.set("By Browser (Full)")
         self.by_browser_full_btn.place(x=45, y=305)
 
         #By browser button.
         self.by_browser_text = tk.StringVar()
-        self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot(self.views.BROWSER_SHORT))
+        self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot("SHORT"))
         self.by_browser_text.set("By Browser (Short)")
         self.by_browser_btn.place(x=45, y=365)
 
@@ -285,6 +285,7 @@ class GUI:
         if self.check_for_data():
             browser_dict = self.views.by_browser(type)
             self.plot(browser_dict)
+
 
     def plot(self, browser_dict):
 

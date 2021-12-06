@@ -44,11 +44,11 @@ def main(argv):
         data_gui.master.mainloop()
     elif task_id == "3a":
         data_gui = DataGUI(file_name)
-        data_gui.by_browser_plot("FULL")
+        data_gui.by_browser_plot_long()
         data_gui.master.mainloop()
     elif task_id == "3b":
         data_gui = DataGUI(file_name)
-        data_gui.by_browser_plot("SHORT")
+        data_gui.by_browser_plot_short()
         data_gui.master.mainloop()
     elif task_id == "4":
         data_gui = DataGUI(file_name)
