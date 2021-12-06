@@ -10,6 +10,7 @@ from subprocess import check_call
 from PIL import ImageTk, Image
 import re
 from pathlib import Path
+import matplotlib
 
 
 #Class imports
@@ -71,13 +72,13 @@ class GUI:
 
         #By browser full button.
         self.by_browser_full_text = tk.StringVar()
-        self.by_browser_full_btn = tk.Button(self.master, textvariable=self.by_browser_full_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot_long())
+        self.by_browser_full_btn = tk.Button(self.master, textvariable=self.by_browser_full_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot("FULL"))
         self.by_browser_full_text.set("By Browser (Full)")
         self.by_browser_full_btn.place(x=45, y=305)
 
         #By browser button.
         self.by_browser_text = tk.StringVar()
-        self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot_short())
+        self.by_browser_btn = tk.Button(self.master, textvariable=self.by_browser_text, font="Arial", bg=self.button_theme, fg="White", borderwidth=5, highlightbackground="black", highlightthickness=2, height=2, width=15, command=lambda : self.by_browser_plot("SHORT"))
         self.by_browser_text.set("By Browser (Short)")
         self.by_browser_btn.place(x=45, y=365)
 
@@ -118,6 +119,9 @@ class GUI:
             file = filedialog.askopenfilename()
             if file: #If they choose a file rather than cancelling           
                 self.views.set_file_name(file)
+
+                
+
 
     def paint_logo(self):
         global img
@@ -277,15 +281,11 @@ class GUI:
             except ValueError:
                 self.error_message("oops!", "Invalid document UUID. Please rectify and then try again.")
 
-    def by_browser_plot_long(self):
+    def by_browser_plot(self, type):
         if self.check_for_data():
-            browser_dict = self.views.by_browser_long()
+            browser_dict = self.views.by_browser(type)
             self.plot(browser_dict)
 
-    def by_browser_plot_short(self):
-        if self.check_for_data():
-            browser_dict = self.views.by_browser_short(self.views.by_browser_long())
-            self.plot(browser_dict)
 
     def plot(self, browser_dict):
 
@@ -293,6 +293,8 @@ class GUI:
         self.add_doc_history(self.document_uuid.get())
 
         self.clear_widgets()
+
+
 
         x_items = []
         y_items = []
@@ -308,6 +310,7 @@ class GUI:
         # Create the subplot. Set x & y and bar thickness. Plot the graph.
         plot = fig.add_subplot(111)
         plot.bar(x_items, y_items, .5)
+        plot.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
         plot.plot()
 
         # creating the Tkinter canvas containing the Matplotlib figure,
