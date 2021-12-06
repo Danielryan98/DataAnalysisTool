@@ -16,9 +16,13 @@ class Functionalities:
 
         start = timeit.default_timer()
         print("Loading data file...")
-        for line in open(self.file_name, 'r'):
+        for line in open(self.file_name, 'r', encoding="UTF-8"):
             self.data_list.append(json.loads(line))
         stop = timeit.default_timer()
+
+        print("Data loaded in " + str(stop-start) + "s with "+ str(len(self.data_list)) + " lines.")
+
+
 
         print("Data loaded in " + str(stop-start) + "s with "+ str(len(self.data_list)) + " lines.")
 
@@ -51,42 +55,44 @@ class Functionalities:
         return continents_dict
 
     #Needs refactored
-    def by_browser_long(self):
-        
-        browser_dict_long = {}
-
+    def by_browser(self, type):
+        self.browser_dict = {}
+        self.browser_names_dict = {}
+        self.delete_list = []
         for entry in self.data_list:
-            if "visitor_useragent" in entry:
-                if entry["visitor_useragent"] not in browser_dict_long:
-                    browser_dict_long.update({entry["visitor_useragent"]: 1})
+            for key in entry:
+                if key == "visitor_useragent":
+                    value = entry["visitor_useragent"]
+                    if value not in self.browser_dict.keys():
+                        self.browser_dict[value] = 1
+                    else:
+                        self.browser_dict[value] += 1
+        print(len(self.browser_dict))
+        self.browser_names_dict["Unspecified"] = 0
+        if type == "SHORT":
+            for entry in self.browser_dict.keys():
+                entry_data = hp.detect(entry)
+                if "browser" in entry_data:
+                    x = entry_data.get("browser")
+                    x = x.get('name')
+                    if x not in self.browser_names_dict.keys():
+                        self.browser_names_dict[x] = self.browser_dict[entry]
+                    else:
+                        self.browser_names_dict[x] += self.browser_dict[entry]
                 else:
-                    browser_dict_long[entry["visitor_useragent"]] = browser_dict_long[entry["visitor_useragent"]] + 1
-        print(browser_dict_long)
-        return browser_dict_long
-
-    def by_browser_short(self, browser_dict_long):
-
-        browser_dict_short = {}
-
-        for entry in browser_dict_long:
-            entry_data = hp.detect(entry)
-            if 'browser' in entry_data:
-                x = entry_data.get("browser")
-                x = x.get('name')
-                if x not in browser_dict_short:
-                    browser_dict_short.update({x:1})
-                else:
-                    browser_dict_short[x] = browser_dict_short[x] + 1
-        browser_dict_short["Other"] = 0
-        delete_list = []
-        for browser, count in browser_dict_short.items():
-            if count < 50:
-                browser_dict_short["Other"] += count
-                delete_list.append(browser)
-        for browser in delete_list:
-            del browser_dict_short[browser]
-        print(browser_dict_short)
-        return browser_dict_short
+                    self.browser_names_dict["Unspecified"] += self.browser_dict[entry]
+            self.browser_names_dict["Other"] = 0
+            for browser, count in self.browser_names_dict.items():
+                if browser != "Unspecified" and count < 50:
+                    self.browser_names_dict["Other"] += count
+                    self.delete_list.append(browser)
+            for browser in self.delete_list:
+                del self.browser_names_dict[browser]
+            print(len(self.browser_names_dict))
+            return self.browser_names_dict
+        else:
+            return self.browser_dict
+            
 
     def user_minutes(self):
         users_dict = {}
@@ -199,4 +205,3 @@ class Functionalities:
 # print(views.by_browser_short(views.by_browser_long()))
 # print(views.user_minutes())
 # print(views.also_likes("aaaaaaaaaaaa-00000000df1ad06a86c40000000feadbe", "00000000deadbeef", views.sort_func))
-
