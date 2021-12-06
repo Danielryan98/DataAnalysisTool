@@ -10,6 +10,7 @@ from subprocess import check_call
 from PIL import ImageTk, Image
 import re
 from pathlib import Path
+import matplotlib
 
 
 #Class imports
@@ -118,6 +119,9 @@ class GUI:
             file = filedialog.askopenfilename()
             if file: #If they choose a file rather than cancelling           
                 self.views.set_file_name(file)
+
+                
+
 
     def paint_logo(self):
         global img
@@ -289,7 +293,7 @@ class GUI:
 
         self.clear_widgets()
 
-        print(browser_dict.items())
+
 
         x_items = []
         y_items = []
@@ -305,6 +309,7 @@ class GUI:
         # Create the subplot. Set x & y and bar thickness. Plot the graph.
         plot = fig.add_subplot(111)
         plot.bar(x_items, y_items, .5)
+        plot.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
         plot.plot()
 
         # creating the Tkinter canvas containing the Matplotlib figure,

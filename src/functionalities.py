@@ -1,5 +1,5 @@
 #Library imports
-import json
+import json, timeit
 import pycountry_convert as pc
 import httpagentparser as hp
 from multipledispatch import dispatch
@@ -19,11 +19,22 @@ class Functionalities:
         self.current_vis_uuid = ""
         self.BROWSER_FULL = "FULL"
         self.BROWSER_SHORT = "SHORT"
+        self.read = False
 
     def set_file_name(self, file_name):
         self.file_name = file_name
-        for line in open(self.file_name, 'r'):
+        # clear the list because it could already be populated
+        self.data_list.clear()
+
+        start = timeit.default_timer()
+        print("Loading data file...")
+        for line in open(self.file_name, 'r', encoding="UTF-8"):
             self.data_list.append(json.loads(line))
+        stop = timeit.default_timer()
+
+        print("Data loaded in " + str(stop-start) + "s with "+ str(len(self.data_list)) + " lines.")
+
+
 
     def clear_data(self):
         self.browser_dict.clear()
@@ -60,31 +71,39 @@ class Functionalities:
     def by_browser(self, type):
         self.clear_data()
         for entry in self.data_list:
-            if entry["visitor_useragent"] not in self.browser_dict:
-                self.browser_dict.update({entry["visitor_useragent"]: 1})
-            else:
-                self.browser_dict[entry["visitor_useragent"]] = self.browser_dict[entry["visitor_useragent"]] + 1
-        print(self.browser_dict.values())
+            for key in entry:
+                if key == "visitor_useragent":
+                    value = entry["visitor_useragent"]
+                    if value not in self.browser_dict.keys():
+                        self.browser_dict[value] = 1
+                    else:
+                        self.browser_dict[value] += 1
+        print(len(self.browser_dict))
+        self.browser_names_dict["Unspecified"] = 0
         if type == self.BROWSER_SHORT:
-            for entry in self.browser_dict:
+            for entry in self.browser_dict.keys():
                 entry_data = hp.detect(entry)
-                if 'browser' in entry_data:
+                if "browser" in entry_data:
                     x = entry_data.get("browser")
                     x = x.get('name')
-                    if x not in self.browser_names_dict:
-                        self.browser_names_dict.update({x: 1})
+                    if x not in self.browser_names_dict.keys():
+                        self.browser_names_dict[x] = self.browser_dict[entry]
                     else:
-                        self.browser_names_dict[x] = self.browser_names_dict[x] + 1
+                        self.browser_names_dict[x] += self.browser_dict[entry]
+                else:
+                    self.browser_names_dict["Unspecified"] += self.browser_dict[entry]
             self.browser_names_dict["Other"] = 0
             for browser, count in self.browser_names_dict.items():
-                if count < 50:
+                if browser != "Unspecified" and count < 50:
                     self.browser_names_dict["Other"] += count
                     self.delete_list.append(browser)
             for browser in self.delete_list:
                 del self.browser_names_dict[browser]
+            print(len(self.browser_names_dict))
             return self.browser_names_dict
         else:
             return self.browser_dict
+            
 
     def user_minutes(self):
         self.clear_data()
