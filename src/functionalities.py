@@ -8,98 +8,89 @@ class Functionalities:
     def __init__(self):
         self.data_list = []
         self.file_name = ""
-        self.browser_dict = {}
-        self.browser_names_dict = {}
-        self.countries_dict = {}
-        self.continents_dict = {}
-        self.users_dict = {} 
-        self.delete_list = []
-        self.history_dict = {}
-        self.current_doc_uuid = ""
-        self.current_vis_uuid = ""
-        self.BROWSER_FULL = "FULL"
-        self.BROWSER_SHORT = "SHORT"
 
     def set_file_name(self, file_name):
         self.file_name = file_name
+        print("Loading data file...")
         for line in open(self.file_name, 'r'):
             self.data_list.append(json.loads(line))
 
-    def clear_data(self):
-        self.browser_dict.clear()
-        self.browser_names_dict.clear()
-        self.countries_dict.clear()
-        self.continents_dict.clear()
-        self.users_dict.clear()
-        self.delete_list.clear()
-
     # uses the subject_doc_id to uniquely specify a document
     def by_country(self, doc_uuid):
-        self.clear_data()
+        # self.clear_data()
+        countries_dict = {}
+
         for entry in self.data_list:
             # not all entries have the "subject_doc_id key so need to check for it otherwise KeyError exception is thrown"
             if "subject_doc_id" in entry and entry["subject_doc_id"] == doc_uuid:
-                if entry["visitor_country"] not in self.countries_dict:
-                    self.countries_dict.update({entry["visitor_country"]: 1})
+                if entry["visitor_country"] not in countries_dict:
+                    countries_dict.update({entry["visitor_country"]: 1})
                 else:
-                    self.countries_dict[entry["visitor_country"]] = self.countries_dict[entry["visitor_country"]] + 1 
-        return self.countries_dict
+                    countries_dict[entry["visitor_country"]] = countries_dict[entry["visitor_country"]] + 1 
+        return countries_dict
 
     def by_continent(self, doc_uuid):
-        self.clear_data()
+        # self.clear_data()
+        continents_dict = {}
         for entry in self.data_list:
             if "subject_doc_id" in entry and entry["subject_doc_id"] == doc_uuid:
                 continent = pc.country_alpha2_to_continent_code(entry["visitor_country"])
-                if continent not in self.continents_dict:
-                    self.continents_dict.update({continent: 1})
+                if continent not in continents_dict:
+                    continents_dict.update({continent: 1})
                 else:
-                    self.continents_dict[continent] = self.continents_dict[continent] + 1
-        return self.continents_dict
+                    continents_dict[continent] = continents_dict[continent] + 1
+        return continents_dict
 
     #Needs refactored
-    def by_browser(self, type):
-        self.clear_data()
+    def by_browser_long(self):
+        
+        browser_dict_long = {}
+
         for entry in self.data_list:
-            if entry["visitor_useragent"] not in self.browser_dict:
-                self.browser_dict.update({entry["visitor_useragent"]: 1})
-            else:
-                self.browser_dict[entry["visitor_useragent"]] = self.browser_dict[entry["visitor_useragent"]] + 1
-        print(self.browser_dict.values())
-        if type == self.BROWSER_SHORT:
-            for entry in self.browser_dict:
-                entry_data = hp.detect(entry)
-                if 'browser' in entry_data:
-                    x = entry_data.get("browser")
-                    x = x.get('name')
-                    if x not in self.browser_names_dict:
-                        self.browser_names_dict.update({x: 1})
-                    else:
-                        self.browser_names_dict[x] = self.browser_names_dict[x] + 1
-            self.browser_names_dict["Other"] = 0
-            for browser, count in self.browser_names_dict.items():
-                if count < 50:
-                    self.browser_names_dict["Other"] += count
-                    self.delete_list.append(browser)
-            for browser in self.delete_list:
-                del self.browser_names_dict[browser]
-            return self.browser_names_dict
-        else:
-            return self.browser_dict
+            if "visitor_useragent" in entry:
+                if entry["visitor_useragent"] not in browser_dict_long:
+                    browser_dict_long.update({entry["visitor_useragent"]: 1})
+                else:
+                    browser_dict_long[entry["visitor_useragent"]] = browser_dict_long[entry["visitor_useragent"]] + 1
+        return browser_dict_long
+
+    def by_browser_short(self, browser_dict_long):
+
+        browser_dict_short = {}
+
+        for entry in browser_dict_long:
+            entry_data = hp.detect(entry)
+            if 'browser' in entry_data:
+                x = entry_data.get("browser")
+                x = x.get('name')
+                if x not in browser_dict_short:
+                    browser_dict_short.update({x:1})
+                else:
+                    browser_dict_short[x] = browser_dict_short[x] + 1
+        browser_dict_short["Other"] = 0
+        delete_list = []
+        for browser, count in browser_dict_short.items():
+            if count < 50:
+                browser_dict_short["Other"] += count
+                delete_list.append(browser)
+        for browser in delete_list:
+            del browser_dict_short[browser]
+        return browser_dict_short
 
     def user_minutes(self):
-        self.clear_data()
+        users_dict = {}
         for entry in self.data_list:
             # not all entries have even_readtime key so first check for it here
             if "event_readtime" in entry:
                 # then can add the user to the users dict if they don't already exist with time as a key
-                if entry["visitor_uuid"] not in self.users_dict:
-                    self.users_dict.update({entry["visitor_uuid"]: entry["event_readtime"]})
+                if entry["visitor_uuid"] not in users_dict:
+                    users_dict.update({entry["visitor_uuid"]: entry["event_readtime"]})
                 else:
                     # if the user exists already then update the time value
-                    self.users_dict[entry["visitor_uuid"]] += entry["event_readtime"]
+                    users_dict[entry["visitor_uuid"]] += entry["event_readtime"]
         # then sort the dict by time value in descending order
-        self.users_dict = (dict(sorted(self.users_dict.items(), key=lambda item: item[1], reverse=True)))
-        return self.users_dict
+        users_dict = (dict(sorted(users_dict.items(), key=lambda item: item[1], reverse=True)))
+        return users_dict
 
     def readers_of_doc(self, doc_uuid):
         user_uuids = []
@@ -136,7 +127,7 @@ class Functionalities:
         xs = set([])
         for k in also_likes_dict.keys():
             # gets the list of document UUIDs associated with a key k and adds them to the set xs
-            xs = xs | set(also_likes_dict[k])
+            xs = xs | set(also_likes_dict[delete_listk])
         xs_sort = [[sort_func(x,also_likes_dict), x] for x in xs]
 
         # appends a list of visitors who have read the document
@@ -186,4 +177,14 @@ class Functionalities:
         xs_sort.reverse()
 
         return xs_sort
+    
+
+# views = Functionalities()
+# views.set_file_name("sample_100k_lines.json")
+# print(views.by_country("140227100039-dd1d500b0bf0e8a2a3f9d46011f425a2"))
+# print(views.by_continent("140227100039-dd1d500b0bf0e8a2a3f9d46011f425a2"))
+# # print(views.by_browser_long())
+# print(views.by_browser_short(views.by_browser_long()))
+# print(views.user_minutes())
+# print(views.also_likes("aaaaaaaaaaaa-00000000df1ad06a86c40000000feadbe", "00000000deadbeef", views.sort_func))
 
