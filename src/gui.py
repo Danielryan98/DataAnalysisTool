@@ -127,7 +127,7 @@ class GUI:
     def paint_logo(self):
         global img
         try:
-            path = Path("../assets", "logonew.jpg")
+            path = "/assets/logonew.jpg"
             img = (Image.open(path))
             img = img.resize((425,100), Image.ANTIALIAS)
             img = ImageTk.PhotoImage(img)
